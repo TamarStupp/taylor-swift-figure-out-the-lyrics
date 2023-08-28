@@ -35,8 +35,9 @@ const createWordElements = () => {
     let sterileWord;
     for (let index in lyrics) {
         sterileWord = sterilize(lyrics[index]);
-        if (!sterileWord) {
+        if (sterileWord === '') {
             lyrics.splice(index, 1);
+            continue
         }
         wordDiv = document.createElement('div');
         wordDiv.setAttribute('data-word', sterileWord);
@@ -105,3 +106,4 @@ const finishGame = () => {
 getRandomSongName();
 
 
+// maybe add success precentages at the end?

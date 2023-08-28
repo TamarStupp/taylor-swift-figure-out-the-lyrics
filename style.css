@@ -7,6 +7,7 @@
 html {
     margin: 0;
     height: 100%;
+    font-size: 175%;
 }
 
 /* scrollbar styling */
@@ -43,7 +44,7 @@ h1 {
 #guess {
     margin-bottom: 1rem;
     position: sticky;
-    top: 20px;
+    top: 1rem;
     left: 1rem;
     padding: 0.1rem 0.3rem;
     border: gray 1px solid;
@@ -70,9 +71,9 @@ h1 {
     color: transparent;
     text-align: center;
     user-select: none;
-    font-size: small;
     margin: 0;
     break-inside: avoid;
+    font-size: 70%;
 }
 
 
@@ -88,7 +89,7 @@ h1 {
 .timer {
     position: fixed;
     right: 0.5rem;
-    top: 20px;
+    top: 1rem;
     width: fit-content;
     background-color: white;
     border: gray 1px solid;
