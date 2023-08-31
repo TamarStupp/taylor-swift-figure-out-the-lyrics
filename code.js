@@ -12,6 +12,7 @@ const getRandomSongName = async () => {
     const result = await reponse.json();
     const randomNum = Math.floor(Math.random() * result.length)
     const currentSongId = result[randomNum].song_id;
+    console.log('song id: ' + currentSongId);
     getSongLyrics(currentSongId);
 }
 
@@ -37,7 +38,11 @@ const createWordElements = () => {
         sterileWord = sterilize(lyrics[index]);
         if (sterileWord === '') {
             lyrics.splice(index, 1);
-            continue
+            sterileWord = sterilize(lyrics[index]);
+            if (sterileWord === '') {
+                lyrics.splice(index, 1);
+                sterileWord = sterilize(lyrics[index]);  
+            }
         }
         wordDiv = document.createElement('div');
         wordDiv.setAttribute('data-word', sterileWord);
@@ -107,3 +112,4 @@ getRandomSongName();
 
 
 // maybe add success precentages at the end?
+//  remove featured artists names (no body no crime for example)
