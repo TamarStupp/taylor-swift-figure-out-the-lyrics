@@ -126,9 +126,11 @@ const finishGame = () => {
 const customAlert = (text, wrapper) => {
     wrapper.querySelector('.text').innerText = text;
     let promise = new Promise((resolve, reject) => {
-        wrapper.querySelector('.close-btn').addEventListener('click', () => {
-            wrapper.style.display = 'none';
-            resolve("next");
+        wrapper.addEventListener('click', (event) => {
+            if (event.target.classList.contains('close-btn')) {
+                wrapper.style.display = 'none';
+                resolve("next");
+            }
         });
     });
     wrapper.style.display = 'block';
