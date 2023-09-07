@@ -1,7 +1,7 @@
 let lyrics;
 let uniqueLyrics = [];
-let minutesLeft = 10;
-let secondsLeft = 0;
+let minutesLeft = 0;
+let secondsLeft = 5;
 let timerInterval;
 
 const getRandomSongName = async () => {
@@ -13,36 +13,39 @@ const getRandomSongName = async () => {
     const randomNum = Math.floor(Math.random() * result.length)
     const currentSongId = result[randomNum].song_id;
     console.log('song id: ' + currentSongId);
-    getSongLyrics(currentSongId);
+    getSongLyrics(128);
 }
 
 const getSongLyrics = async (currentSongId) => {
     const reponse = await fetch(`https://taylor-swift-api.sarbo.workers.dev/lyrics/${currentSongId}`);
     const result = await reponse.json();
     lyrics = result.lyrics.split(/[ (/\n)]/g);
+    // make sure DOM is ready before trying to change it
     createWordElements();
     // activate input
     document.getElementById('guess').setAttribute('placeholder', 'Guess the lyrics');
     document.getElementById('guess').readOnly = false;
     document.getElementById('guess').classList.remove('disabled');
     document.getElementById('guess').addEventListener('input', onInput);
+    document.getElementById('pause').addEventListener('click', pause)
 
     // activate timer
-    timerInterval = setInterval(updateTimer, 1000)
+    timerInterval = setInterval(updateTimer, 1000);
 }
 
+/*-------------- Create the word elements ------------------ */
 const createWordElements = () => {
     let wordDiv;
     let sterileWord;
     for (let index in lyrics) {
         sterileWord = sterilize(lyrics[index]);
-        if (sterileWord === '') {
-            lyrics.splice(index, 1);
-            sterileWord = sterilize(lyrics[index]);
-            if (sterileWord === '') {
-                lyrics.splice(index, 1);
-                sterileWord = sterilize(lyrics[index]);  
+        // make sure the word is not empty or not a singer name
+        while (sterileWord === '' || lyrics[index].includes('[') || lyrics[index].includes(']')) {
+            lyrics.splice(Number(index), 1);
+            if (index >= lyrics.length) {
+                return;
             }
+            sterileWord = sterilize(lyrics[index]);
         }
         wordDiv = document.createElement('div');
         wordDiv.setAttribute('data-word', sterileWord);
@@ -58,15 +61,26 @@ const createWordElements = () => {
 
 /*-------------- Removes all punctuation ------------------ */
 const sterilize = (value) => {
+    // chooses only small letters and numbers
     let extractLettersRegex = /[a-z0-9]*/gi;
-    return (value.match(extractLettersRegex).join('').toLowerCase()) 
+    let returnValue = value.match(extractLettersRegex).join('').toLowerCase();
+    // check ofr exclamation word - converting to Set to remove duplicates
+    let exclamations = [... new Set(returnValue.match(/ah|oh|yeah|uh|ooh|^oo/g))].join(''); 
+    // change ooh to oh because it's confusing
+    if (exclamations === 'ooh') { exclamations = 'oh' } 
+    return (exclamations || returnValue); 
 }
 
 const onInput = (event) => {
-    const inputValue = event.currentTarget.value;
+    let inputValue = event.currentTarget.value;
     // Check for win
     if (document.querySelectorAll('.black').length === lyrics.length) {
-        alert('you won!')
+        customAlert('you won!', document.querySelector(".black-screen"))
+    }
+
+    //  change ooh to oh
+    if (inputValue == "ooh") {
+        inputValue = "oh"
     }
 
     // uniqueLyrics is sterile
@@ -82,6 +96,7 @@ const onInput = (event) => {
     }
 }
 
+/*-------------- update timer ------------------ */
 const updateTimer = () => {
     if (secondsLeft <= 0) {
         if (minutesLeft === 0) {
@@ -100,16 +115,33 @@ const updateTimer = () => {
     document.querySelector('.timer').innerText = `${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}`;
 }
 
-
+/*-------------- finish game ------------------ */
 const finishGame = () => {
     document.getElementById('timer').classList.remove('end-of-time');
     clearInterval(timerInterval);
     document.querySelectorAll('.word').forEach(el => {el.classList.add('red')});
-    alert("Time's up");
+    customAlert("Time's up", document.querySelector(".black-screen"));
 }
 
+const customAlert = (text, wrapper) => {
+    wrapper.querySelector('.text').innerText = text;
+    let promise = new Promise((resolve, reject) => {
+        wrapper.querySelector('.close-btn').addEventListener('click', () => {
+            wrapper.style.display = 'none';
+            resolve("next");
+        });
+    });
+    wrapper.style.display = 'block';
+    return(promise);
+}
+const pause = () => {
+    clearInterval(timerInterval);
+    customAlert('Game paused', document.querySelector(".black-screen")).then(() => {
+        timerInterval = setInterval(updateTimer, 1000);
+    })
+}
+
+
+// start the program
 getRandomSongName();
-
-
 // maybe add success precentages at the end?
-//  remove featured artists names (no body no crime for example)
