@@ -1,7 +1,7 @@
 let lyrics;
 let uniqueLyrics = [];
-let minutesLeft = 0;
-let secondsLeft = 5;
+let minutesLeft = 10;
+let secondsLeft = 0;
 let timerInterval;
 
 const getRandomSongName = async () => {
@@ -27,7 +27,8 @@ const getSongLyrics = async (currentSongId) => {
     document.getElementById('guess').readOnly = false;
     document.getElementById('guess').classList.remove('disabled');
     document.getElementById('guess').addEventListener('input', onInput);
-    document.getElementById('pause').addEventListener('click', pause)
+    document.getElementById('pause').addEventListener('click', pause);
+    document.getElementById('word-amount').innerText = `0/${lyrics.length}`
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
@@ -64,8 +65,8 @@ const sterilize = (value) => {
     // chooses only small letters and numbers
     let extractLettersRegex = /[a-z0-9]*/gi;
     let returnValue = value.match(extractLettersRegex).join('').toLowerCase();
-    // check ofr exclamation word - converting to Set to remove duplicates
-    let exclamations = [... new Set(returnValue.match(/ah|oh|yeah|uh|ooh|^oo/g))].join(''); 
+    // check for exclamation word - converting to Set to remove duplicates
+    let exclamations = [... new Set(returnValue.match(/^ah|^oh|^yeah|^uh|^ooh|^oo/g))].join(''); 
     // change ooh to oh because it's confusing
     if (exclamations === 'ooh') { exclamations = 'oh' } 
     return (exclamations || returnValue); 
@@ -88,6 +89,7 @@ const onInput = (event) => {
         if (sterilize(inputValue) === word) {
             document.querySelectorAll(`[data-word="${word}"]`).forEach((el) => {
                 el.classList.add("black");
+                document.getElementById('word-amount').innerText = `${document.getElementsByClassName('black').length}/${lyrics.length}`
             });
             uniqueLyrics.splice(uniqueLyrics.indexOf(word), 1)
             document.getElementById('guess').value = '';
