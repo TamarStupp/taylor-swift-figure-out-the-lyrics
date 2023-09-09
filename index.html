@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,13 +21,21 @@
         <div class="timer" id="timer">10:00</div>
     </div>
     <h1>The Ultimate Taylor Swift guess the lyrics</h1>
-    <p>Instructions - fill later. For now: </p>
+    <p>Code reated by Tamar Stupp</p>
+    <!-- <p>Your goal is to guess which Taylor Swift song is represented by the rectangles and complete all its lyrics. 
+    Type words you think belong to this song and if the word is correct, it will disappear and show in the right rectangles (no need to press ENTER).
+    Each rectangle represent a single word.
+    To start over, refresh the page.
+    </p> -->
     <label for="guess"></label>
     <input type="text" name="guess" autocomplete="off" class="disabled" id="guess" placeholder="Loading..." readonly />
-    <div class="statistic">
-        <div>Score: <span id="word-amount"></span></div>
+    <div id="lyrics-container" class="lyrics-container">
+        <div class="statistic">
+            <div class="score">Score: <span id="word-amount"></span></div>
+            <div id="precent"></div>
+        </div>
+        
     </div>
-    <div id="lyrics-container" class="lyrics-container"></div>
     <div class="alert" id="alert"></div>
     <footer></footer>
 <!-- alerts and popups -->

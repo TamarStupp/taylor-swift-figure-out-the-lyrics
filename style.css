@@ -10,6 +10,19 @@ html {
     font-size: 175%;
 }
 
+h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    font-family: 'Caveat', cursive;
+}
+
+p {
+    margin-top: 0;
+    font-size: 0.8rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
 /* scrollbar styling */
 .scrollStyle {
     scrollbar-color: #e5e5e5 darkgrey;
@@ -37,9 +50,6 @@ html {
     ;
 }
 
-h1 {
-    font-family: 'Caveat', cursive;
-}
 
 #guess {
     margin-bottom: 1rem;
@@ -100,8 +110,19 @@ h1 {
 }
 
 .statistic {
-    width: 100%;
+    width: 95%;
     display: flex;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+    box-sizing: border-box;
+    /* border: 1px gray solid; */
+    border-radius: 5px;
+    padding: 0.1rem 0.4rem;
+    column-span: all;
+}
+
+.score {
+    /* margin-left: auto; */
 }
 
 /* pause btn */
@@ -221,13 +242,13 @@ h1 {
 
 .continue {
     margin-top: 1rem;
-    background-color: rgba(255, 255, 255, 0.63);
-    border: solid 1px #4a4949;
-    color: #4a4949;
-    /* font-weight: 700; */
+    background-color: rgb(255 255 255 / 0%);
+    border: solid 2px #4a4949;
+    color: #3d3c3c;
+    font-weight: 700;
     padding: 0.5% 2%;
     border-radius: 0.2rem;
     font-size: 0.8rem;
     cursor: pointer;
-    /* font-family: 'Caveat', cursive; */
 }
+

@@ -1,7 +1,7 @@
 let lyrics;
 let uniqueLyrics = [];
-let minutesLeft = 10;
-let secondsLeft = 0;
+let minutesLeft = 0;
+let secondsLeft = 5;
 let timerInterval;
 
 const getRandomSongName = async () => {
@@ -28,7 +28,7 @@ const getSongLyrics = async (currentSongId) => {
     document.getElementById('guess').classList.remove('disabled');
     document.getElementById('guess').addEventListener('input', onInput);
     document.getElementById('pause').addEventListener('click', pause);
-    document.getElementById('word-amount').innerText = `0/${lyrics.length}`
+    document.getElementById('word-amount').innerText = `0/${lyrics.length}`;
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
@@ -122,7 +122,8 @@ const finishGame = () => {
     document.getElementById('timer').classList.remove('end-of-time');
     clearInterval(timerInterval);
     document.querySelectorAll('.word').forEach(el => {el.classList.add('red')});
-    customAlert("Time's up", document.querySelector(".black-screen"));
+    document.getElementById('precent').innerText = `Success: ${Math.round(document.getElementsByClassName('black').length/lyrics.length * 100)}%`;
+    // customAlert("Time's up", document.querySelector(".black-screen"));
 }
 
 const customAlert = (text, wrapper) => {
