@@ -8,6 +8,12 @@ html {
     margin: 0;
     height: 100%;
     font-size: 175%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
 }
 
 h1 {
@@ -21,6 +27,29 @@ p {
     font-size: 0.8rem;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
+}
+
+/* reset button tag styles and makes them similar to div's*/
+button {
+    display: block;
+    appearance: none;
+    color: inherit;
+    text-transform: none;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    font-size: inherit;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0.5em;
+    margin-top: 1rem;
+    width: 100vw;
+    /* background:  #f12a77b3; */
+    background:  #ffedf4a6;
 }
 
 /* scrollbar styling */
@@ -60,22 +89,24 @@ p {
     border: gray 1px solid;
     border-radius: 5px;
     font-size: 1rem;
+    background-color: white;
+    z-index: 1;
 }
 
 .lyrics-container {
-    columns: 10 6rem;
-    column-gap: 1.5rem;
+    columns: 10 6em;
+    column-gap: 1.5em;
     width: fit-content;
-    margin-left: 0.5rem;
+    margin-left: 0.5em;
     height: auto;
-    padding-bottom: 1rem;
-    margin-right: 0.5rem;
+    padding-bottom: 1em;
+    margin-right: 0.5em;
 
 }
 
 .word {
-    width: 6rem;
-    height: 1rem;
+    width: 8.6em;
+    height: 1.4em;
     background-color: rgba(255, 192, 203, 0.512);
     border-bottom: black solid 1px;
     color: transparent;
@@ -110,19 +141,38 @@ p {
 }
 
 .statistic {
-    width: 95%;
+    width: 98%;
     display: flex;
     margin-bottom: 0.5rem;
-    gap: 1rem;
+    gap: 1em;
     box-sizing: border-box;
     /* border: 1px gray solid; */
     border-radius: 5px;
     padding: 0.1rem 0.4rem;
     column-span: all;
+    cursor: default;
 }
 
-.score {
-    /* margin-left: auto; */
+.flex-btn {
+    align-self: center;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 1rem;
+    border: 1px black solid;
+    cursor: pointer;
+}
+
+.question-mark {
+    height: 1.2em;
+    width: 1.2em;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.give-up {
+    padding: 0.3em 0.5em;
+    font-size: 0.8em;
+    break-inside: avoid;
 }
 
 /* pause btn */
@@ -213,6 +263,11 @@ p {
     font-weight: 700;
 }
 
+.instructions-text {
+    font-size: 1.3em;
+    padding: 2em;
+}
+
 .exit {
     position: absolute;
     top: 0.5rem;
@@ -252,3 +307,44 @@ p {
     cursor: pointer;
 }
 
+@media screen and (max-width: 760px) {
+    /* html {
+        font-size: 110%;
+    } */
+
+    h1 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-top: 0.5em;
+    }
+
+    .alert-wrapper {
+        font-size: 1.26rem;
+        min-width: 85%;
+    }
+
+    .lyrics-container {
+        font-size: 0.9rem;
+    }
+
+    .statistic {
+        font-size: 0.7rem;
+        word-break: keep-all;
+        break-inside: avoid;
+    }
+
+    #give-up {
+        border-radius: 0.7em;
+        padding: 0.3em 0.4em;
+    }
+
+    #timer {
+        position: relative;
+        left: 97vw;
+        transform: translateX(-100%);
+    }
+
+    .pause {
+        position: absolute;
+    }
+}

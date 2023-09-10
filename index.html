@@ -13,7 +13,7 @@
 <body class="scrollStyle">
     <div class="timer-wrapper">
         <!-- Yes, the pause button is CSS and not a picture -->
-        <div class="pause" id="pause" alt="pause">
+        <div class="pause" id="pause-btn" alt="pause">
             <div class="stick"></div>
             <div class="divider"></div>
             <div class="stick"></div>
@@ -21,7 +21,7 @@
         <div class="timer" id="timer">10:00</div>
     </div>
     <h1>The Ultimate Taylor Swift guess the lyrics</h1>
-    <p>Code reated by Tamar Stupp</p>
+    <p>Code Created by Tamar Stupp using &nbsp;<a href="https://bump.sh/sarbor/doc/taylor-swift-api/operation/operation-get-lyrics">Taylor Swift lyrics API</a></p>
     <!-- <p>Your goal is to guess which Taylor Swift song is represented by the rectangles and complete all its lyrics. 
     Type words you think belong to this song and if the word is correct, it will disappear and show in the right rectangles (no need to press ENTER).
     Each rectangle represent a single word.
@@ -32,18 +32,31 @@
     <div id="lyrics-container" class="lyrics-container">
         <div class="statistic">
             <div class="score">Score: <span id="word-amount"></span></div>
+            <div class="border"></div>
             <div id="precent"></div>
+            <button class="flex-btn question-mark" id="instructions-btn">?</button>
+            <button class="flex-btn give-up" id="give-up">give up</button>
         </div>
         
     </div>
     <div class="alert" id="alert"></div>
-    <footer></footer>
+    <footer>The rights for the lyrics reserved to &copyTaylor Swift</footer>
 <!-- alerts and popups -->
-    <div class="black-screen">
+    <div class="black-screen" id="pause-text">
         <div class="alert-wrapper">
-            <div class="text"></div>
+            <div class="text">Game Paused</div>
             <div class="close-btn exit"></div>
             <button class="close-btn continue">Continue</button>
+        </div>
+    </div>
+    <div class="black-screen" id="instructions-text">
+        <div class="alert-wrapper">
+            <div class="instructions-text text">Your goal is to guess which Taylor Swift song is represented by the rectangles and complete all its lyrics. 
+                Type words you think belong to this song and if the word is correct, it will disappear and show in the right rectangles (no need to press ENTER).
+                Each rectangle represent a single word.
+                To start over, refresh the page. <br>
+                Are you ready for it?</div>
+            <div class="close-btn exit"></div>
         </div>
     </div>
 </body>

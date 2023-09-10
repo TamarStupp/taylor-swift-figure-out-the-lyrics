@@ -1,7 +1,7 @@
 let lyrics;
 let uniqueLyrics = [];
-let minutesLeft = 0;
-let secondsLeft = 5;
+let minutesLeft = 10;
+let secondsLeft = 15;
 let timerInterval;
 
 const getRandomSongName = async () => {
@@ -27,8 +27,10 @@ const getSongLyrics = async (currentSongId) => {
     document.getElementById('guess').readOnly = false;
     document.getElementById('guess').classList.remove('disabled');
     document.getElementById('guess').addEventListener('input', onInput);
-    document.getElementById('pause').addEventListener('click', pause);
+    document.getElementById('pause-btn').addEventListener('click', () => customAlert(document.querySelector("#pause-text")));
     document.getElementById('word-amount').innerText = `0/${lyrics.length}`;
+    document.getElementById('instructions-btn').addEventListener('click', () => customAlert(document.querySelector("#instructions-text")))
+    document.getElementById('give-up').addEventListener('click', finishGame)
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
@@ -120,14 +122,20 @@ const updateTimer = () => {
 /*-------------- finish game ------------------ */
 const finishGame = () => {
     document.getElementById('timer').classList.remove('end-of-time');
+    document.getElementById('pause-btn').removeEventListener('click', customAlert);
+    document.getElementById('give-up').removeEventListener('click', finishGame);
+    document.getElementById('give-up').style.display = "none";
     clearInterval(timerInterval);
+    document.getElementById('guess').readOnly = true;
+    document.getElementById('guess').classList.add('disabled');
     document.querySelectorAll('.word').forEach(el => {el.classList.add('red')});
     document.getElementById('precent').innerText = `Success: ${Math.round(document.getElementsByClassName('black').length/lyrics.length * 100)}%`;
     // customAlert("Time's up", document.querySelector(".black-screen"));
 }
 
-const customAlert = (text, wrapper) => {
-    wrapper.querySelector('.text').innerText = text;
+const customAlert = (wrapper) => {
+    clearInterval(timerInterval);
+    // wrapper.querySelector('.text').innerText = text;
     let promise = new Promise((resolve, reject) => {
         wrapper.addEventListener('click', (event) => {
             if (event.target.classList.contains('close-btn')) {
@@ -136,14 +144,11 @@ const customAlert = (text, wrapper) => {
             }
         });
     });
-    wrapper.style.display = 'block';
-    return(promise);
-}
-const pause = () => {
-    clearInterval(timerInterval);
-    customAlert('Game paused', document.querySelector(".black-screen")).then(() => {
+    promise.then(() => {
         timerInterval = setInterval(updateTimer, 1000);
     })
+    wrapper.style.display = 'block';
+    return(promise);
 }
 
 
