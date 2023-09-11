@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat&family=Raleway:wght@300&display=swap');
 
+
+@font-face {
+    font-family: "MonoRale";
+    src: url("assets/fonts/Monorale-Light.woff");
+}
+
+
 * {
     font-family: 'Raleway', sans-serif;
 }
@@ -9,7 +16,7 @@ html {
     height: 100%;
     font-size: 175%;
     margin: 0;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 }
 
 body {
@@ -29,6 +36,11 @@ p {
     padding-left: 0.5rem;
 }
 
+a:not(:visited) {
+    color: rgb(243 135 34);
+}
+
+
 /* reset button tag styles and makes them similar to div's*/
 button {
     display: block;
@@ -47,9 +59,13 @@ footer {
     font-size: 0.7rem;
     padding: 0.5em;
     margin-top: 1rem;
-    width: 100vw;
-    /* background:  #f12a77b3; */
+    width: 100%;
+    box-sizing: border-box;
     background:  #ffedf4a6;
+}
+
+.number {
+    font-family: 'MonoRale';
 }
 
 /* scrollbar styling */
@@ -151,6 +167,7 @@ footer {
     padding: 0.1rem 0.4rem;
     column-span: all;
     cursor: default;
+    align-items: flex-end;
 }
 
 .flex-btn {
@@ -264,7 +281,7 @@ footer {
 }
 
 .instructions-text {
-    font-size: 1.3em;
+    font-size: 1.3rem;
     padding: 2em;
 }
 
