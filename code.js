@@ -13,7 +13,7 @@ const getRandomSongName = async () => {
     const randomNum = Math.floor(Math.random() * result.length)
     const currentSongId = result[randomNum].song_id;
     console.log('song id: ' + currentSongId);
-    getSongLyrics(128);
+    getSongLyrics(currentSongId);
 }
 
 const getSongLyrics = async (currentSongId) => {
@@ -31,6 +31,13 @@ const getSongLyrics = async (currentSongId) => {
     document.getElementById('word-amount').innerText = `0/${lyrics.length}`;
     document.getElementById('instructions-btn').addEventListener('click', () => customAlert(document.querySelector("#instructions-text")))
     document.getElementById('give-up').addEventListener('click', finishGame)
+
+    // pause the game when user changes tabs
+    document.addEventListener("visibilitychange", event => {
+        if (document.visibilityState !== "visible") {
+             document.getElementById("pause-btn").click();
+        }
+    });
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
@@ -122,12 +129,13 @@ const updateTimer = () => {
 /*-------------- finish game ------------------ */
 const finishGame = () => {
     document.getElementById('timer').classList.remove('end-of-time');
-    document.getElementById('pause-btn').removeEventListener('click', customAlert);
+    document.getElementById('pause-btn').removeEventListener('click', pause);
     document.getElementById('give-up').removeEventListener('click', finishGame);
     document.getElementById('give-up').style.display = "none";
     clearInterval(timerInterval);
     document.getElementById('guess').readOnly = true;
     document.getElementById('guess').classList.add('disabled');
+    document.getElementById('guess').setAttribute('placeholder',"Game's Over!");
     document.querySelectorAll('.word').forEach(el => {el.classList.add('red')});
     document.getElementById('precent').innerText = `Success: ${Math.round(document.getElementsByClassName('black').length/lyrics.length * 100)}%`;
     // customAlert("Time's up", document.querySelector(".black-screen"));
@@ -150,7 +158,6 @@ const customAlert = (wrapper) => {
     wrapper.style.display = 'block';
     return(promise);
 }
-
 
 // start the program
 getRandomSongName();

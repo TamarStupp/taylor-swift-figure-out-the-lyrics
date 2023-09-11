@@ -16,7 +16,7 @@ html {
     height: 100%;
     font-size: 175%;
     margin: 0;
-    /* overflow-x: hidden; */
+    --timer-top: 1rem;
 }
 
 body {
@@ -147,7 +147,7 @@ footer {
 .timer {
     position: fixed;
     right: 0.5rem;
-    top: 1rem;
+    top: var(--timer-top);
     width: fit-content;
     background-color: white;
     border: gray 1px solid;
@@ -199,7 +199,7 @@ footer {
     --padding: calc(var(--button-width) / 2.5);
     position: fixed;
     right: 4.2rem;
-    top: calc(1rem + (0.5rem - 0.5 * var(--button-width)));
+    top: calc(var(--timer-top) + (0.5rem - 0.5 * var(--button-width)));
     display: flex;
     width: var(--button-width);
     height: var(--button-width);
@@ -328,6 +328,7 @@ footer {
 @media screen and (max-width: 760px) {
     html {
         font-size: 165%;
+        --timer-top: 0.5rem;
     }
 
     h1 {
@@ -357,7 +358,7 @@ footer {
         padding: 0.3em 0.4em;
     }
 
-    #timer {
+    .timer {
         position: relative;
         left: 97vw;
         transform: translateX(-100%);
@@ -370,5 +371,10 @@ footer {
     .instructions-text {
         padding: 1.5em;
         font-size: 1rem;
+    }
+
+    #guess {
+        font-size: 0.8rem;
+        left: 0.7rem;
     }
 }
