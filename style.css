@@ -308,19 +308,20 @@ footer {
 }
 
 @media screen and (max-width: 760px) {
-    /* html {
-        font-size: 110%;
-    } */
+    html {
+        font-size: 165%;
+    }
 
     h1 {
         text-align: center;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         margin-top: 0.5em;
     }
 
     .alert-wrapper {
         font-size: 1.26rem;
         min-width: 85%;
+        min-height: 11rem;
     }
 
     .lyrics-container {
@@ -346,5 +347,10 @@ footer {
 
     .pause {
         position: absolute;
+    }
+
+    .instructions-text {
+        padding: 1.5em;
+        font-size: 1rem;
     }
 }
