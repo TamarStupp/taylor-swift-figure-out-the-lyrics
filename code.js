@@ -1,7 +1,7 @@
 let lyrics;
 let uniqueLyrics = [];
 let minutesLeft = 10;
-let secondsLeft = 15;
+let secondsLeft = 13;
 let timerInterval;
 
 const getRandomSongName = async () => {
@@ -78,7 +78,7 @@ const onInput = (event) => {
     let inputValue = event.currentTarget.value;
     // Check for win
     if (document.querySelectorAll('.black').length === lyrics.length) {
-        customAlert('you won!', document.querySelector(".black-screen"))
+        customAlert('Congratulations, you won!', document.querySelector(".black-screen"))
     }
 
     //  change ooh to oh

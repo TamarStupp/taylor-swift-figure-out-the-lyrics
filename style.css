@@ -157,7 +157,8 @@ footer {
 }
 
 .statistic {
-    width: 98%;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     margin-bottom: 0.5rem;
     gap: 1em;
