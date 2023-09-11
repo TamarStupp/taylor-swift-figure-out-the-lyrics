@@ -22,7 +22,7 @@ const getSongLyrics = async (currentSongId) => {
     lyrics = result.lyrics.split(/[ (/\n)]/g);
     // make sure DOM is ready before trying to change it
     createWordElements();
-    // activate input
+    // activate input and start game
     document.getElementById('guess').setAttribute('placeholder', 'Guess the lyrics');
     document.getElementById('guess').readOnly = false;
     document.getElementById('guess').classList.remove('disabled');
@@ -30,7 +30,8 @@ const getSongLyrics = async (currentSongId) => {
     document.getElementById('pause-btn').addEventListener('click', () => customAlert(document.querySelector("#pause-text")));
     document.getElementById('word-amount').innerText = `0/${lyrics.length}`;
     document.getElementById('instructions-btn').addEventListener('click', () => customAlert(document.querySelector("#instructions-text")))
-    document.getElementById('give-up').addEventListener('click', finishGame)
+    document.getElementById('give-up').addEventListener('click', finishGame);
+    document.querySelector('.score').addEventListener('click', (e) => e.currentTarget.classList.toggle('hidden'))
 
     // pause the game when user changes tabs
     document.addEventListener("visibilitychange", event => {
@@ -38,9 +39,31 @@ const getSongLyrics = async (currentSongId) => {
              document.getElementById("pause-btn").click();
         }
     });
+    
+    // sends response to the google form to register traffic
+    registerEntrance();
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
+}
+
+const registerEntrance = async () => {
+    let newDate = new Date();
+    let date = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
+    let time = `${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}`
+    await fetch(
+        'https://docs.google.com/forms/d/e/1FAIpQLSdlQMloARGShFuOMs-9UZDS2fqPa4JVVdsINhfdLGeZVIixYg/formResponse?' +
+        new URLSearchParams({
+            'usp': 'pp_url',
+            'entry.80995540': date,
+            'entry.869813470': time,
+        }),
+        {
+            mode: 'no-cors',
+            "method": "POST"
+        }
+        );
+        console.log('registered');
 }
 
 /*-------------- Create the word elements ------------------ */
@@ -85,7 +108,8 @@ const onInput = (event) => {
     let inputValue = event.currentTarget.value;
     // Check for win
     if (document.querySelectorAll('.black').length === lyrics.length) {
-        customAlert('Congratulations, you won!', document.querySelector(".black-screen"))
+        customAlert('Congratulations, you won!', document.querySelector(".black-screen"));
+        finishGame();
     }
 
     //  change ooh to oh
@@ -129,15 +153,18 @@ const updateTimer = () => {
 /*-------------- finish game ------------------ */
 const finishGame = () => {
     document.getElementById('timer').classList.remove('end-of-time');
-    document.getElementById('pause-btn').removeEventListener('click', pause);
+    // document.getElementById('pause-btn').removeEventListener('click', pause);
     document.getElementById('give-up').removeEventListener('click', finishGame);
     document.getElementById('give-up').style.display = "none";
     clearInterval(timerInterval);
     document.getElementById('guess').readOnly = true;
-    document.getElementById('guess').classList.add('disabled');
+    document.getElementById('guess').classList.add('endGame');
     document.getElementById('guess').setAttribute('placeholder',"Game's Over!");
-    document.querySelectorAll('.word').forEach(el => {el.classList.add('red')});
+    document.getElementById('guess').value = '';
+    document.querySelectorAll('.word:not(.black)').forEach(el => {el.classList.add('red')});
     document.getElementById('precent').innerText = `Success: ${Math.round(document.getElementsByClassName('black').length/lyrics.length * 100)}%`;
+    document.querySelector('.score').classList.remove('hidden');
+    document.querySelector('.score').style.pointerEvents = 'none';
     // customAlert("Time's up", document.querySelector(".black-screen"));
 }
 
