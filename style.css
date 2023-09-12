@@ -389,6 +389,8 @@ footer {
 
 .endGame {
     background-color: rgb(236, 236, 236);
+    position: relative;
+    top: 0;
 }
 
 .endGame::placeholder {
