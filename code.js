@@ -34,17 +34,19 @@ const getSongLyrics = async (currentSongId) => {
     document.querySelector('.score').addEventListener('click', (e) => e.currentTarget.classList.toggle('hidden'))
 
     // pause the game when user changes tabs
-    document.addEventListener("visibilitychange", event => {
-        if (document.visibilityState !== "visible") {
-             document.getElementById("pause-btn").click();
-        }
-    });
+    document.addEventListener("visibilitychange", changeVisibility);
     
     // sends response to the google form to register traffic
     registerEntrance();
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
+}
+
+const changeVisibility = (e) => {
+    if (document.visibilityState !== "visible") {
+         document.getElementById("pause-btn").click();
+    }
 }
 
 const registerEntrance = async () => {
@@ -106,11 +108,6 @@ const sterilize = (value) => {
 
 const onInput = (event) => {
     let inputValue = event.currentTarget.value;
-    // Check for win
-    if (document.querySelectorAll('.black').length === lyrics.length) {
-        customAlert('Congratulations, you won!', document.querySelector(".black-screen"));
-        finishGame();
-    }
 
     //  change ooh to oh
     if (inputValue == "ooh") {
@@ -128,6 +125,15 @@ const onInput = (event) => {
             document.getElementById('guess').value = '';
             break;
         }
+    }
+
+    // Check for win
+    console.log(document.querySelectorAll('.black'));
+    if (document.querySelectorAll('.black').length >= lyrics.length) {
+        customAlert(document.querySelector(".black-screen"));
+        document.querySelector(".text").innerText = 'You Won!';
+        document.querySelector(".black-screen .continue").remove();
+        finishGame();
     }
 }
 
@@ -166,6 +172,8 @@ const finishGame = () => {
     document.querySelector('.score').classList.remove('hidden');
     document.querySelector('.score').style.pointerEvents = 'none';
     // customAlert("Time's up", document.querySelector(".black-screen"));
+    document.removeEventListener("visibilitychange", changeVisibility);
+    document.getElementById('pause-btn').style.pointerEvents = 'none';
 }
 
 const customAlert = (wrapper) => {
