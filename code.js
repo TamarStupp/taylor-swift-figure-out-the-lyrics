@@ -3,6 +3,7 @@ let uniqueLyrics = [];
 let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
+let isPaused = false;
 
 const getRandomSongName = async () => {
     const url = `https://taylor-swift-api.sarbo.workers.dev/songs`;
@@ -41,6 +42,7 @@ const getSongLyrics = async (currentSongId) => {
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
+    isPaused = false;
 }
 
 const changeVisibility = (e) => {
@@ -177,21 +179,25 @@ const finishGame = () => {
 }
 
 const customAlert = (wrapper) => {
-    clearInterval(timerInterval);
-    // wrapper.querySelector('.text').innerText = text;
-    let promise = new Promise((resolve, reject) => {
-        wrapper.addEventListener('click', (event) => {
-            if (event.target.classList.contains('close-btn')) {
-                wrapper.style.display = 'none';
-                resolve("next");
-            }
+    if (!isPaused) {
+        isPaused = true;
+        clearInterval(timerInterval);
+        // wrapper.querySelector('.text').innerText = text;
+        let promise = new Promise((resolve, reject) => {
+            wrapper.addEventListener('click', (event) => {
+                if (event.target.classList.contains('close-btn')) {
+                    wrapper.style.display = 'none';
+                    resolve("next");
+                }
+            });
         });
-    });
-    promise.then(() => {
-        timerInterval = setInterval(updateTimer, 1000);
-    })
-    wrapper.style.display = 'block';
-    return(promise);
+        promise.then(() => {
+            timerInterval = setInterval(updateTimer, 1000);
+            isPaused = false;
+        })
+        wrapper.style.display = 'block';
+        return(promise);
+    }
 }
 
 // start the program
