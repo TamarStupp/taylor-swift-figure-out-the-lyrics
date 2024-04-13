@@ -38,7 +38,8 @@ const getSongLyrics = async (currentSongId) => {
     document.addEventListener("visibilitychange", changeVisibility);
     
     // sends response to the google form to register traffic
-    registerEntrance();
+    // disabled when the site is down ):
+    // registerEntrance();
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
