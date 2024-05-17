@@ -397,24 +397,8 @@ footer {
     border-color: black;
 }
 
-.site-down {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.429);
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-}
-
-.site-down  .text {
-    background-color: rgb(253, 98, 124);
-    padding: 3rem 2rem;
-    font-size: 1.2rem;
-    border-radius: 0.5rem;
-    max-width: 80%;
-    margin: 1rem;
+.small-text {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
     font-weight: bold;
 }

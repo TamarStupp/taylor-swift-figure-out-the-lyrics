@@ -5,20 +5,18 @@ let secondsLeft = 13;
 let timerInterval;
 let isPaused = false;
 
-const getRandomSongName = async () => {
-    const url = `https://taylor-swift-api.sarbo.workers.dev/songs`;
-    const reponse = await fetch(url, {
-        "method": "GET",
-    });
-    const result = await reponse.json();
-    const randomNum = Math.floor(Math.random() * result.length)
-    const currentSongId = result[randomNum].song_id;
-    console.log('song id: ' + currentSongId);
-    getSongLyrics(currentSongId);
-}
-
-const getSongLyrics = async (currentSongId) => {
-    const reponse = await fetch(`https://taylor-swift-api.sarbo.workers.dev/lyrics/${currentSongId}`);
+const getRandomSongLyrics = async (currentSongId) => {
+    let tries = 0;
+    let reponse = await fetch(`https://taylor-swift-api.vercel.app/api/sons/random`);
+    console.log(reponse);
+    while (!reponse.ok && tries < 5) {
+        reponse = await fetch(`https://taylor-swift-api.vercel.app/api/sons/random`);
+        tries++;
+    }
+    // if retriving the song lyrics after five tries is impossible, show error message
+    if (!reponse.ok ) {
+        customAlert(document.querySelector('#no-song'));
+    }
     const result = await reponse.json();
     lyrics = result.lyrics.split(/[ (/\n)]/g);
     // make sure DOM is ready before trying to change it
@@ -38,7 +36,6 @@ const getSongLyrics = async (currentSongId) => {
     document.addEventListener("visibilitychange", changeVisibility);
     
     // sends response to the google form to register traffic
-    // disabled when the site is down ):
     // registerEntrance();
 
     // activate timer
@@ -202,5 +199,4 @@ const customAlert = (wrapper) => {
 }
 
 // start the program
-getRandomSongName();
-// maybe add success precentages at the end?
+getRandomSongLyrics()
