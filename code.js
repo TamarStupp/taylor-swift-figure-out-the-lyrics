@@ -36,7 +36,7 @@ const getRandomSongLyrics = async (currentSongId) => {
     document.addEventListener("visibilitychange", changeVisibility);
     
     // sends response to the google form to register traffic
-    // registerEntrance();
+    registerEntrance();
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
