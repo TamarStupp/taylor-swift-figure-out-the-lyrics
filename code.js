@@ -7,10 +7,10 @@ let isPaused = false;
 
 const getRandomSongLyrics = async (currentSongId) => {
     let tries = 0;
-    let reponse = await fetch(`https://taylor-swift-api.vercel.app/api/sons/random`);
+    let reponse = await fetch(`https://taylor-swift-api.vercel.app/api/songs/random`);
     console.log(reponse);
     while (!reponse.ok && tries < 5) {
-        reponse = await fetch(`https://taylor-swift-api.vercel.app/api/sons/random`);
+        reponse = await fetch(`https://taylor-swift-api.vercel.app/api/songs/random`);
         tries++;
     }
     // if retriving the song lyrics after five tries is impossible, show error message
