@@ -4,21 +4,24 @@ let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
 let isPaused = false;
+const NUMBER_OF_SONGS = 198;
 
 const getRandomSongLyrics = async (currentSongId) => {
+    // get random song number, max num is NUMBER_OF_SONGS
+    const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
     let tries = 0;
-    let reponse = await fetch(`https://taylor-swift-api.vercel.app/api/songs/random`);
+    let reponse = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
     console.log(reponse);
-    while (!reponse.ok && tries < 5) {
-        reponse = await fetch(`https://taylor-swift-api.vercel.app/api/songs/random`);
+    while (!reponse.ok && reponse.status >= 500 && tries < 5) {
+        reponse = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
         tries++;
     }
     // if retriving the song lyrics after five tries is impossible, show error message
     if (!reponse.ok ) {
         customAlert(document.querySelector('#no-song'));
     }
-    const result = await reponse.json();
-    lyrics = result.lyrics.split(/[ (/\n)]/g);
+    const result = await reponse.text();
+    lyrics = result.split(/[ (/\n)]/g);
     // make sure DOM is ready before trying to change it
     createWordElements();
     // activate input and start game
