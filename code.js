@@ -11,7 +11,6 @@ const getRandomSongLyrics = async (currentSongId) => {
     const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
     let tries = 0;
     let reponse = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
-    console.log(reponse);
     while (!reponse.ok && reponse.status >= 500 && tries < 5) {
         reponse = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
         tries++;
@@ -53,22 +52,25 @@ const changeVisibility = (e) => {
 }
 
 const registerEntrance = async () => {
-    let newDate = new Date();
-    let date = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
-    let time = `${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}`
-    await fetch(
-        'https://docs.google.com/forms/d/e/1FAIpQLSdlQMloARGShFuOMs-9UZDS2fqPa4JVVdsINhfdLGeZVIixYg/formResponse?' +
-        new URLSearchParams({
-            'usp': 'pp_url',
-            'entry.80995540': date,
-            'entry.869813470': time,
-        }),
-        {
-            mode: 'no-cors',
-            "method": "POST"
-        }
-        );
-        console.log('registered');
+    // Don't register enterance if it's from localhost becasue I do tests on localhost
+    if (!document.location.href.includes("127.0.0.1") && !document.location.href.includes("localhost")) {
+        let newDate = new Date();
+        let date = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
+        let time = `${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}`
+        await fetch(
+            'https://docs.google.com/forms/d/e/1FAIpQLSdlQMloARGShFuOMs-9UZDS2fqPa4JVVdsINhfdLGeZVIixYg/formResponse?' +
+            new URLSearchParams({
+                'usp': 'pp_url',
+                'entry.80995540': date,
+                'entry.869813470': time,
+            }),
+            {
+                mode: 'no-cors',
+                "method": "POST"
+            }
+            );
+            console.log('registered');
+    }
 }
 
 /*-------------- Create the word elements ------------------ */

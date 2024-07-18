@@ -36,5 +36,8 @@ const saveSongs = async () => {
 //     fs.mkdir(`./songs/${albumIndex[i]}`, (error) => {error ? console.log(error) : ''})
 // }
 
+// This is powershell but I want to copy manually the TTPD songs and I don't want to di this alone
+
+// PS C:\Users\תמר\Desktop\code\taylor-swift-figure-out-the-lyrics> New-Item -Path "./songs/allSongs/song$((Get-ChildItem -Path './songs/AllSongs').Count + 1).txt"
 
 saveSongs();
