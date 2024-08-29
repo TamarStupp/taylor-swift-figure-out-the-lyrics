@@ -4,7 +4,8 @@ let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
 let isPaused = false;
-const NUMBER_OF_SONGS = 198;
+// songs without TTPD: 198
+const NUMBER_OF_SONGS = 231;
 
 const getRandomSongLyrics = async (currentSongId) => {
     // get random song number, max num is NUMBER_OF_SONGS
@@ -202,6 +203,20 @@ const customAlert = (wrapper) => {
         return(promise);
     }
 }
+
+
+// install service worker
+navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
+    console.log('service worker installed')
+})
+
+navigator.serviceWorker.ready.then(registration => {
+    console.log('controller: ', navigator.serviceWorker.controller);
+  });
+
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('new service worker took control')
+})
 
 // start the program
 getRandomSongLyrics()
