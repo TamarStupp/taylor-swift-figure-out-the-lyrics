@@ -4,7 +4,7 @@ let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
 let isPaused = false;
-const NUMBER_OF_SONGS = 198;
+const NUMBER_OF_SONGS = 231; // without ttpd: 198
 
 const getRandomSongLyrics = async (currentSongId) => {
     // get random song number, max num is NUMBER_OF_SONGS
