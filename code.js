@@ -4,7 +4,7 @@ let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
 let isPaused = false;
-// songs without TTPD: 198
+// songs without TTPD: 199
 const NUMBER_OF_SONGS = 231;
 
 const getRandomSongLyrics = async (currentSongId) => {
