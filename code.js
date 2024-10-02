@@ -219,4 +219,28 @@ const customAlert = (wrapper) => {
 // })
 
 // start the program
-getRandomSongLyrics()
+getRandomSongLyrics();
+// handle dark mode
+window.addEventListener("load", () => {
+    // detect user preferenct
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add("dark");
+        document.getElementById("dark-mode-input").checked = false;
+    }
+
+
+
+    document.getElementById("dark-mode-input").addEventListener("change", () => {
+        document.documentElement.classList.toggle("dark");
+    })
+})
+
+
+/* notes:
+    - add listener to prefers color scheme changes?
+    - choose alert-bg color
+    - the red color at the endgame looks terrible in dark mode (missing-word)
+    - fix dark mode switch in mobile
+    - the footer in dark mode looks weird
+
+*/

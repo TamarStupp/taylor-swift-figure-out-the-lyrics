@@ -6,32 +6,50 @@
     src: url("assets/fonts/Monorale-Light.woff");
 }
 
-/* color:
-    --background: white;
-    --alert-bg: rgb(253, 98, 124);
-    --alert-txt: #4a4949;
-    --word-bg: rgba(255, 192, 203, 0.512);
-    dark mode
-    --background: #4a4949;
-    --word-bg: rgba(253, 98, 124, 0.512); */
-
 
 * {
     font-family: 'Raleway', sans-serif;
+    color: var(--bold-text);
+    transition: background-color 0.4s;
 }
 
 html {
-    color: light-dark(black, gray);
     margin: 0;
     height: 100%;
     font-size: 175%;
     margin: 0;
     --timer-top: 1rem;
+    --bold-text: black; 
+    --body-bg: white;
+    --word-bg: #ffc0cb83;
+    --placeholder-color: #808080;
+    --missing-word: #ff0000;
+    --gameover-bg: #ececec;
+    --footer-bg: #ffedf4a6;
+    --handle-bg: white;
+    --alert-bg: #fd627c;
+    --alert-color: #4A4949;
+    --coninute-color: #3d3c3c;
+}
+
+html.dark {
+    color-scheme: dark;
+    --bold-text: #D3C0C3;
+    --body-bg: #4a4949;
+    --word-bg: #D2959F;
+    --placeholder-color: #949494;
+    --missing-word: #bd0000; /* change to blue? #00289f */
+    --gameover-bg: #d5d5d5;
+    --footer-bg: #473336;
+    --handle-bg: #D3C0C3;
+    --alert-bg: #a90046; /* #A90031; #a90058; */
+    --alert-color: #BFA6AA;
+    --continue-color: #BFA6AA /* #D3C0C3 */;
 }
 
 body {
     margin: 0;
-    background-color: light-dark(white, #4a4949);
+    background-color: var(--body-bg);
 }
 
 h1 {
@@ -73,7 +91,11 @@ footer {
     margin-top: 1rem;
     width: 100%;
     box-sizing: border-box;
-    background:  #ffedf4a6;
+    background:  var(--footer-bg);
+
+    /* or maybe - for dark mode 
+    background: #bb878fa3;
+    color: black; */
 }
 
 .number {
@@ -92,8 +114,8 @@ footer {
 .dark-mode-switch {
     position: relative;
     display: inline-block;
-    width: 2rem;
-    height:  1rem;
+    width: 1.8rem;
+    height:  0.8rem;
   }
   
   .dark-mode-switch input { 
@@ -110,39 +132,44 @@ footer {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 34px;
     box-sizing: border-box;
     display: block;
-    
+    /* dark mode */
+    border: 1px rgb(221, 223, 225) solid;
+    background-color: #D2959F;
   }
   
   /* the handle */
   .slider .handle {
     --handle-width-px: 0.8rem; /* 80% percent of switch height */
-    width: 0.8rem;
-    height: 0.8rem;
-    margin-inline: 7.5%;
-    margin-top: 0.1rem; /* put the handle vertically in the middle*/
-    background-color: white;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-inline: 3.5%;
+    /* margin-top: 0.1rem; put the handle vertically in the middle */
+    margin-top: 0.07rem;
     -webkit-transition: .4s;
     transition: .4s;
     box-sizing: border-box;
     border-radius: 50%;
+    /* dark mode */
+    border: 1px #DDDFE1 solid;
+    background-color: var(--handle-bg);
   }
   
-  input:checked + .slider {
-    background-color: #ffc0cb83;
+  /* light mode */
+  input:checked + .slider{
+    background-color: white;
+    border: 1px var(--bold-text) solid;
   }
   
-  input:focus + .slider {
-    box-shadow: 0 0 1px #ffc0cb83;
-  }
   
   input:checked + .slider .handle{
-    margin-left: calc(100% - 7.5% - 0.8rem);
+    border: 1px var(--bold-text) solid;
+    background-color: #ffc0cb83;
+    margin-left: calc(100% - 5% - 0.6rem);
     /* transform: translateX(calc(-(var(--switch-height)))); */
   }
   
@@ -153,14 +180,14 @@ footer {
   }
 
   .moon-fill {
-    stroke: black;
+    stroke: var(--bold-text);
     stroke-width: 1;
-    fill: white;
+    fill: var(--handle-bg);
     /* in dark mode: fill: #D3C0C3; stroke: none;*/
   }
 
   .moon-mask {
-    fill: black;
+    fill: var(--bold-text);
     /* dark mode - white */
   }
 
@@ -170,13 +197,13 @@ footer {
   }
 
   .sun-fill {
-    fill: white;
+    fill: var(--handle-bg);
     /* in dark mode: fill: #D3C0C3; */
   }
 
   .sun-stroke {
     stroke: white;
-    stroke: black;
+    stroke: var(--bold-text);
   }
 
 /* scrollbar styling */
@@ -213,11 +240,15 @@ footer {
     top: 1rem;
     left: 1rem;
     padding: 0.1rem 0.3rem;
-    border: gray 1px solid;
+    border: var(--placeholder-color) 1px solid;
     border-radius: 5px;
     font-size: 1rem;
-    background-color: white;
+    background-color: var(--body-bg);
     z-index: 1;
+}
+
+.guess::placeholder {
+    color: var(--placeholder-color);
 }
 
 .lyrics-container {
@@ -234,7 +265,7 @@ footer {
 .word {
     width: 8.6em;
     height: 1.4em;
-    background-color: #ffc0cb83;
+    background-color: var(--word-bg);
     border-bottom: black solid 1px;
     color: transparent;
     text-align: center;
@@ -247,7 +278,7 @@ footer {
 
 .disabled {
     background-color: transparent;
-    border: 0.1rem black;
+    border: 0.1rem var(--bold-text);
 }
 
 .disabled:focus, .endGame:focus {
@@ -260,8 +291,8 @@ footer {
     right: 0.5rem;
     top: var(--timer-top);
     width: fit-content;
-    background-color: white;
-    border: gray 1px solid;
+    background-color: var(--body-bg);
+    border: var(--placeholder-color) 1px solid;
     border-radius: 5px;
     padding: 0.1rem 0.3rem;
     font-weight: 800;
@@ -287,7 +318,7 @@ footer {
     box-sizing: border-box;
     text-align: center;
     border-radius: 1rem;
-    border: 1px black solid;
+    border: 1px var(--bold-text) solid;
     cursor: pointer;
 }
 
@@ -317,15 +348,15 @@ footer {
     border-radius: 5px;
     padding: 0.2rem var(--padding) 0.2rem var(--padding);
     cursor: pointer;
-    background-color: white;
+    background-color: var(--body-bg);
 }
 
 .pause .stick {
-    border: #000000 1px solid;
+    border: var(--bold-text) 1px solid;
     height: 100%;
     border-radius: 0.5rem;
     flex: 1 1 1em;
-    background-color: white;
+    background-color: var(--body-bg);
 }
 
 .pause .divider {
@@ -338,7 +369,7 @@ footer {
 }
 
 .red {
-    color: #ff0000;
+    color: var(--missing-word);
 }
 
 .end-of-time {
@@ -382,12 +413,13 @@ footer {
     align-items: center;
     min-width: 26rem;
     min-height: 16rem;
-    color: #4a4949;
+    color: var(--alert-color);
     font-size: 2rem;
-    background-color: #fd627c;
+    background-color: var(--alert-bg);
 }
 
 .alert-wrapper .text {
+    color: var(--alert-color);
     font-family: 'Caveat', cursive;
     font-weight: 700;
 }
@@ -412,7 +444,7 @@ footer {
     width: 16%;
     height: 100%;
     position: absolute;
-    background: #4a4949;
+    background: var(--alert-color);
     border-radius: 6px;
 }
 
@@ -427,8 +459,8 @@ footer {
 .continue {
     margin-top: 1rem;
     background-color: #ffffff00;
-    border: solid 2px #4a4949;
-    color: #3d3c3c;
+    border: solid 2px var(--alert-color);
+    color: var(--continue-color);
     font-weight: 700;
     padding: 0.5% 2%;
     border-radius: 0.2rem;
@@ -499,13 +531,13 @@ footer {
 }
 
 .endGame {
-    background-color: #ececec;
+    background-color: var(--gameover-bg);
     position: relative;
     top: 0;
 }
 
 .endGame::placeholder {
-    border-color: black;
+    border-color: var(--bold-text);
 }
 
 .small-text {
