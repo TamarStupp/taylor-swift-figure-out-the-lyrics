@@ -206,17 +206,17 @@ const customAlert = (wrapper) => {
 
 
 // install service worker
-navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
-    console.log('service worker installed')
-})
+// navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
+//     console.log('service worker installed')
+// })
 
-navigator.serviceWorker.ready.then(registration => {
-    console.log('controller: ', navigator.serviceWorker.controller);
-  });
+// navigator.serviceWorker.ready.then(registration => {
+//     console.log('controller: ', navigator.serviceWorker.controller);
+//   });
 
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('new service worker took control')
-})
+// navigator.serviceWorker.addEventListener('controllerchange', () => {
+//     console.log('new service worker took control')
+// })
 
 // start the program
 getRandomSongLyrics()
