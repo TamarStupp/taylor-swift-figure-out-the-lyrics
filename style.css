@@ -81,13 +81,19 @@ footer {
 }
 
 /* dark mode switch styling */
+.dark-mode {
+    display: flex;
+    align-items: center;
+    margin-top: var(--timer-top);
+    margin-left: 0.5rem;
+    gap: 0.3rem;
+}
+
 .dark-mode-switch {
     position: relative;
     display: inline-block;
     width: 2rem;
     height:  1rem;
-    margin-top: var(--timer-top);
-    margin-left: 0.5rem;
   }
   
   .dark-mode-switch input { 
@@ -108,9 +114,9 @@ footer {
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 34px;
-    /* border: solid black 1px; */
     box-sizing: border-box;
     display: block;
+    
   }
   
   /* the handle */
@@ -141,14 +147,26 @@ footer {
   }
   
   /* SVG styles */
+  .moon {
+    max-height: 1rem;
+    aspect-ratio: 41 / 40;
+  }
+
   .moon-fill {
     stroke: black;
     stroke-width: 1;
     fill: white;
     /* in dark mode: fill: #D3C0C3; stroke: none;*/
   }
-  .sun {
 
+  .moon-mask {
+    fill: black;
+    /* dark mode - white */
+  }
+
+  .sun {
+    max-height: 1.2rem;
+    aspect-ratio: 41 / 40;
   }
 
   .sun-fill {
