@@ -82,11 +82,10 @@ footer {
 
 /* dark mode switch styling */
 .dark-mode-switch {
-    --switch-height: 1rem;
     position: relative;
     display: inline-block;
     width: 2rem;
-    height: var(--switch-height);
+    height:  1rem;
     margin-top: var(--timer-top);
     margin-left: 0.5rem;
   }
@@ -116,12 +115,11 @@ footer {
   
   /* the handle */
   .slider .handle {
-    --handle-width-precentage: 80;
-    --handle-width-px: calc((var(--switch-height) * var(--handle-width-precentage)) / 100); /* 85% percent of switch height */
-    width: var(--handle-width-px);
-    height: var(--handle-width-px);
+    --handle-width-px: 0.8rem; /* 80% percent of switch height */
+    width: 0.8rem;
+    height: 0.8rem;
     margin-inline: 7.5%;
-    margin-top: calc((var(--switch-height) - var(--handle-width-px)) / 2); /* put the handle verticalling in the middle*/
+    margin-top: 0.1rem; /* put the handle vertically in the middle*/
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
@@ -138,11 +136,30 @@ footer {
   }
   
   input:checked + .slider .handle{
-    margin-left: calc(100% - 7.5% - var(--handle-width-px));
+    margin-left: calc(100% - 7.5% - 0.8rem);
     /* transform: translateX(calc(-(var(--switch-height)))); */
   }
   
-  
+  /* SVG styles */
+  .moon-fill {
+    stroke: black;
+    stroke-width: 1;
+    fill: white;
+    /* in dark mode: fill: #D3C0C3; stroke: none;*/
+  }
+  .sun {
+
+  }
+
+  .sun-fill {
+    fill: white;
+    /* in dark mode: fill: #D3C0C3; */
+  }
+
+  .sun-stroke {
+    stroke: white;
+    stroke: black;
+  }
 
 /* scrollbar styling */
 .scrollStyle {
