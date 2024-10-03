@@ -30,6 +30,13 @@ html {
     --alert-bg: #fd627c;
     --alert-color: #4A4949;
     --coninute-color: #3d3c3c;
+    --scroll-track: #f89aa876;
+    --scroll-thumb: #ee9ba7;
+    --scroll-thumb-hover: #fb7a8d;
+    --anchor-color: #551a8b;
+    --anchor-color: #f38722;
+    --blink-color: #ea7601;
+    --gameover-color: var(--placeholder-color);
 }
 
 html.dark {
@@ -38,13 +45,19 @@ html.dark {
     --body-bg: #4a4949;
     --word-bg: #D2959F;
     --placeholder-color: #949494;
-    --missing-word: #bd0000; /* change to blue? #00289f */
-    --gameover-bg: #d5d5d5;
+    --missing-word: #ad0101; /* change to blue? #00289f */
+    --gameover-bg: #6b6969;
+    --gameover-color: white;
     --footer-bg: #473336;
     --handle-bg: #D3C0C3;
-    --alert-bg: #a90046; /* #A90031; #a90058; */
+    --alert-bg: #a90046;
     --alert-color: #BFA6AA;
-    --continue-color: #BFA6AA /* #D3C0C3 */;
+    --continue-color: #BFA6AA;
+    --scroll-thumb: #d9a6ae;
+    --scroll-thumb-hover: #e795a2d9;
+    --scroll-track: #f89aa876;
+    --anchor-color: #f38722;
+    --blink-color: #ea7601;
 }
 
 body {
@@ -67,7 +80,7 @@ p {
 }
 
 a:not(:visited) {
-    color: #f38722;
+    color: var(--anchor-color);
 }
 
 
@@ -112,10 +125,11 @@ footer {
 }
 
 .dark-mode-switch {
+    --switch-height: 0.8rem;
     position: relative;
     display: inline-block;
-    width: 1.8rem;
-    height:  0.8rem;
+    width: calc(var(--switch-height) * 2.25);
+    height:  var(--switch-height);
   }
   
   .dark-mode-switch input { 
@@ -136,7 +150,9 @@ footer {
     transition: .4s;
     border-radius: 34px;
     box-sizing: border-box;
-    display: block;
+    padding-inline: 3.5%;
+    display: flex;
+    align-items: center;
     /* dark mode */
     border: 1px rgb(221, 223, 225) solid;
     background-color: #D2959F;
@@ -144,12 +160,8 @@ footer {
   
   /* the handle */
   .slider .handle {
-    --handle-width-px: 0.8rem; /* 80% percent of switch height */
-    width: 0.6rem;
-    height: 0.6rem;
-    margin-inline: 3.5%;
-    /* margin-top: 0.1rem; put the handle vertically in the middle */
-    margin-top: 0.07rem;
+    width: calc(0.8 * var(--switch-height)); /* 80% percent of switch height */
+    height: calc(0.8 * var(--switch-height)); /* 80% percent of switch height */
     -webkit-transition: .4s;
     transition: .4s;
     box-sizing: border-box;
@@ -169,13 +181,13 @@ footer {
   input:checked + .slider .handle{
     border: 1px var(--bold-text) solid;
     background-color: #ffc0cb83;
-    margin-left: calc(100% - 5% - 0.6rem);
-    /* transform: translateX(calc(-(var(--switch-height)))); */
+    /* margin-left: calc(100% - 5% - 0.6rem); */
+    transform: translateX(calc(var(--switch-height) * 1.25));
   }
   
   /* SVG styles */
   .moon {
-    max-height: 1rem;
+    max-width: 1rem;
     aspect-ratio: 41 / 40;
   }
 
@@ -183,16 +195,14 @@ footer {
     stroke: var(--bold-text);
     stroke-width: 1;
     fill: var(--handle-bg);
-    /* in dark mode: fill: #D3C0C3; stroke: none;*/
   }
 
   .moon-mask {
     fill: var(--bold-text);
-    /* dark mode - white */
   }
 
   .sun {
-    max-height: 1.2rem;
+    max-width: 1.2rem;
     aspect-ratio: 41 / 40;
   }
 
@@ -207,30 +217,31 @@ footer {
   }
 
 /* scrollbar styling */
-.scrollStyle {
-    scrollbar-color: #e5e5e5 darkgrey;
-    scrollbar-width: 11px;
+@supports not selector(::-webkit-scrollbar) {
+    .scrollStyle {
+        scrollbar-color: #e5e5e5 darkgrey;
+        scrollbar-width: 11px;
+    }
 }
 
 .scrollStyle::-webkit-scrollbar {
-    width: 5px;
+    width: 10px;
 }
 
 .scrollStyle::-webkit-scrollbar-track {
     border-radius: 0.4rem;
-    background-color: #f89aa876;
+    background-color: var( --scroll-track);
 }
 
 
 .scrollStyle::-webkit-scrollbar-thumb {
-    background-color: #f890a0;
+    background-color: var(--scroll-thumb);
     border-radius: 0.4rem;
     width: 6px;
 }
 
 .scrollStyle::-webkit-scrollbar-thumb:hover {
-    background-color: #da5267;
-    ;
+    background-color: var( --scroll-thumb-hover);
 }
 
 
@@ -374,7 +385,7 @@ footer {
 
 .end-of-time {
     animation: blink-red 1.2s ease-out infinite;
-    color: #ea7601;
+    color: var(--blink-color);
 }
 
 @keyframes blink-red {
@@ -468,10 +479,15 @@ footer {
     cursor: pointer;
 }
 
+/* mobile styles */
 @media screen and (max-width: 760px) {
     html {
         font-size: 165%;
         --timer-top: 0.5rem;
+    }
+
+    html.dark {
+        --alert-bg: #702957;
     }
 
     h1 {
@@ -501,15 +517,46 @@ footer {
         padding: 0.3em 0.4em;
     }
 
+    .timer-wrapper {
+        height: fit-content;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: var(--timer-top);
+        padding-right: 0.5rem;
+        box-sizing: border-box;
+        /* padding-right: 0.5rem; */
+    }
+    
     .timer {
-        position: relative;
-        left: 97vw;
-        transform: translateX(-100%);
+        position: static;
     }
 
     .pause {
-        position: absolute;
+        position: static;
     }
+
+    .dark-mode {
+        margin-right: auto;
+        margin-top: 0;
+        /* width: 5rem; */
+    }
+    
+    .dark-mode-switch {
+        --switch-height:max(0.8rem, 29px);
+    }
+
+    .sun, .moon, .dark-mode-switch {
+        flex-shrink: 0;
+    }
+    
+    .sun, .moon {
+        max-width: 1.2rem;
+    }
+
+
 
     .instructions-text {
         padding: 1.5em;
@@ -536,8 +583,8 @@ footer {
     top: 0;
 }
 
-.endGame::placeholder {
-    border-color: var(--bold-text);
+.endGame.guess::placeholder {
+    color: var(--gameover-color);
 }
 
 .small-text {

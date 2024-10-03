@@ -237,10 +237,10 @@ window.addEventListener("load", () => {
 
 
 /* notes:
-    - add listener to prefers color scheme changes?
+
     - choose alert-bg color
     - the red color at the endgame looks terrible in dark mode (missing-word)
     - fix dark mode switch in mobile
-    - the footer in dark mode looks weird
+
 
 */
