@@ -38,8 +38,6 @@ const getRandomSongLyrics = async (currentSongId) => {
     // pause the game when user changes tabs
     document.addEventListener("visibilitychange", changeVisibility);
     
-    // sends response to the google form to register traffic
-    registerEntrance();
 
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
@@ -164,8 +162,9 @@ const updateTimer = () => {
 
 /*-------------- finish game ------------------ */
 const finishGame = () => {
+    // sends response to the google form to register traffic
+    registerEntrance();
     document.getElementById('timer').classList.remove('end-of-time');
-    // document.getElementById('pause-btn').removeEventListener('click', pause);
     document.getElementById('give-up').removeEventListener('click', finishGame);
     document.getElementById('give-up').style.display = "none";
     clearInterval(timerInterval);
