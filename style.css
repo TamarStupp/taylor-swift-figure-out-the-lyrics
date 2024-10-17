@@ -50,7 +50,7 @@ html.dark {
     --gameover-color: white;
     --footer-bg: #473336;
     --handle-bg: #D3C0C3;
-    --alert-bg: #a90046;
+    --alert-bg: #a80024; /* #a90046 previous alert-bg color*/
     --alert-color: #BFA6AA;
     --continue-color: #BFA6AA;
     --scroll-thumb: #d9a6ae;
