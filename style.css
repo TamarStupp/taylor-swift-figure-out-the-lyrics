@@ -83,6 +83,10 @@ a:not(:visited) {
     color: var(--anchor-color);
 }
 
+/* apply only in dark mode becasue I couldn't replicate the light mode */
+html.dark input:focus-visible {
+    outline: 1px solid var(--bold-text);
+}
 
 /* reset button tag styles and makes them similar to div's*/
 button {
