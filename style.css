@@ -50,7 +50,8 @@ html.dark {
     --gameover-color: white;
     --footer-bg: #473336;
     --handle-bg: #D3C0C3;
-    --alert-bg: #a80024; /* #a90046 previous alert-bg color*/
+    --alert-bg: #a90046; /* only for computers */
+    --alert-bg-mobile: hsl(340, 55%, 33%);/* #702957 */;
     --alert-color: #BFA6AA;
     --continue-color: #BFA6AA;
     --scroll-thumb: #d9a6ae;
@@ -491,7 +492,7 @@ footer {
     }
 
     html.dark {
-        --alert-bg: #702957;
+        --alert-bg: var(--alert-bg-mobile)
     }
 
     h1 {
