@@ -1,9 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Raleway:wght@300&display=swap');
-
-
 @font-face {
     font-family: "MonoRale";
     src: url("assets/fonts/Monorale-Light.woff");
+}
+
+@font-face {
+    font-family: Caveat;
+    src: url("assets/fonts/Caveat-Regular.ttf");
+}
+
+@font-face {
+    font-family: Raleway;
+    src: url("assets/fonts/Raleway-Light.ttf");
 }
 
 
@@ -432,6 +439,9 @@ footer {
     color: var(--alert-color);
     font-size: 2rem;
     background-color: var(--alert-bg);
+    /* preparation for settings screen */
+    max-height: 95vh;
+    overflow: auto;
 }
 
 .alert-wrapper .text {
