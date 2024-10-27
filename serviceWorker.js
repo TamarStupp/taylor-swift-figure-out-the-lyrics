@@ -19,7 +19,6 @@ const files = [
 
 // addToCache
 const addSongsToCache = (cache) => {
-	console.log('resources in cache: ' + resourcesInCache);
 	const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
 	cache.add(`./songs/allSongs/song${randomSongNum}.txt`).then(() => {
 		resourcesInCache++;
@@ -47,7 +46,6 @@ self.addEventListener("install", (event) => {
 			cache.keys().then((innerKeys) => {
 				resourcesInCache = innerKeys.length;
 				addSongsToCache(cache);
-				console.log("added to cache");
 			});
 		})
 	)
@@ -58,14 +56,8 @@ self.addEventListener("install", (event) => {
 	)
 })
 
-self.addEventListener("activate", () => {
-	console.log("new SW activated");
-})
-
-
 self.addEventListener("fetch", (event) => {
-	console.log(event.request.url);
-	if (!event.request.url.includes('/allSongs/')) {
+	if (!event.request.url.includes('randomSong')) {
 		event.respondWith(
 			caches.open(GENERAL_CACHE_NAME).then(cache => {
 				return cache.match(event.request.url).then(response => {
@@ -85,7 +77,9 @@ self.addEventListener("fetch", (event) => {
 				return newSongResponse;
 			} else {
 				try {
-					onlineRes = await fetch(event.request.url);
+					const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
+					onlineRes = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
+					addSongsToCache(cache);
 					return onlineRes;
 				} catch {
 					return new Response("Something went wrong", { status: 502, error: "Unable to  connect to the internet" })
@@ -99,6 +93,7 @@ self.addEventListener("fetch", (event) => {
 
 // clear old caches
 self.addEventListener('activate', event => {
+	console.log('activated')
 	event.waitUntil(
 		caches.keys().then(cacheNames => {
 			return Promise.all(

@@ -12,15 +12,7 @@ const NUMBER_OF_SONGS = 231;
  * all the albums the song can be from (filtering)
  */
 const getRandomSongLyrics = async () => {
-    // get random song number, max num is NUMBER_OF_SONGS
-    const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
-    let tries = 0;
-    let response = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
-    while (!response.ok && response.status >= 500 && tries < 5) {
-        response = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
-        tries++;
-    }
-    console.log("actual song", response.url);
+    let response = await fetch(`./songs/allSongs/randomSong`);
     // if retriving the song lyrics after five tries is impossible, show error message
     if (!response.ok ) {
         customAlert(document.querySelector('#no-song'));
@@ -171,7 +163,10 @@ const finishGame = () => {
     registerEntrance();
     document.getElementById('timer').classList.remove('end-of-time');
     document.getElementById('give-up').removeEventListener('click', finishGame);
-    document.getElementById('give-up').style.display = "none";
+    // document.getElementById('give-up').style.display = "none";
+    document.getElementById('give-up').innerText= "Restart";
+    document.getElementById('give-up').addEventListener('click', restart);
+
     clearInterval(timerInterval);
     document.getElementById('guess').readOnly = true;
     document.getElementById('guess').classList.add('endGame');
@@ -216,6 +211,8 @@ const restart = () => {
     secondsLeft = 13;
     timerInterval;
     isPaused = false;
+    document.getElementById('give-up').innerText= "give up";
+    document.getElementById('give-up').removeEventListener('click', restart);
     getRandomSongLyrics();
 }
 
