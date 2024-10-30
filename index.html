@@ -109,14 +109,16 @@
             <button class="flex-btn question-mark" id="instructions-btn">?</button>
             <button class="flex-btn give-up" id="give-up">give up</button>
         </div>
+        <div id="lyrics"></div>
 
     </div>
     <footer>The rights for the lyrics reserved to &copyTaylor Swift</footer>
     <!-- alerts and popups -->
     <div class="black-screen" id="pause-text">
-        <div class="alert-wrapper">
+        <div class="alert-wrapper pause-screen">
             <div class="text">Game Paused</div>
             <div class="close-btn exit"></div>
+            <button class="start-over">Start Over</button>
             <button class="close-btn continue">Continue</button>
         </div>
     </div>
@@ -137,6 +139,14 @@
             <div class="text">It's me. Hi, I'm the problem it's me.<br>
                 <div class="small-text">Something went wrong,
                     <br> Please refresh or try again later😔
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="black-screen" id="no-internet">
+        <div class="alert-wrapper">
+            <div class="text">You're on your own kid<br>
+                <div class="small-text">It seems you aren't connected to the internet. Please check your connection and try again.
                 </div>
             </div>
         </div>
