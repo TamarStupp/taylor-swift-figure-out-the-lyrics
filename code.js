@@ -44,7 +44,6 @@ const getRandomSongLyrics = async () => {
 
 
     // activate timer
-    console.log(timerInterval);
     timerInterval = setInterval(updateTimer, 1000);
     isPaused = false;
 }
@@ -137,11 +136,8 @@ const onInput = (event) => {
     }
 
     // Check for win
-    console.log(document.querySelectorAll('.black'));
     if (document.querySelectorAll('.black').length >= lyrics.length) {
-        customAlert(document.querySelector(".black-screen"));
-        document.querySelector(".text").innerText = 'You Won!';
-        document.querySelector(".black-screen .continue").remove();
+        customAlert(document.querySelector("#win"));
         finishGame();
     }
 }
@@ -192,7 +188,6 @@ const finishGame = () => {
 const customAlert = (wrapper) => {
     if (!isPaused) {
         isPaused = true;
-        console.log(timerInterval);
         clearInterval(timerInterval);
         // wrapper.querySelector('.text').innerText = text;
         let promise = new Promise((resolve, reject) => {
@@ -204,7 +199,7 @@ const customAlert = (wrapper) => {
                     resolve(false);
                     restart();
                 }
-                event.target.removeEventListener("click", onClickWrapper);
+                wrapper.removeEventListener("click", onClickWrapper);
             });
         });
         promise.then((isStartTimer) => {
@@ -224,7 +219,6 @@ const restart = () => {
     uniqueLyrics = [];
     minutesLeft = 10;
     secondsLeft = 13;
-    console.log('clearInterval restart');
     clearInterval(timerInterval);
     timerInterval = '';
     isPaused = false;
@@ -236,7 +230,7 @@ const restart = () => {
     document.getElementById('guess').readOnly = false;
     document.getElementById('guess').classList.remove('endGame');
     document.querySelector('.score').style.pointerEvents = 'all';
-    document.getElementById('pause-btn').style.pointerEvents = 'all';
+    document.getElementById('pause-btn').style.pointerEvents = 'all'; 
     getRandomSongLyrics();
 }
 
