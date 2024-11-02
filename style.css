@@ -20,6 +20,13 @@
     transition: background-color 0.4s;
 }
 
+
+svg * {
+    color: inherit;
+    pointer-events: none;
+}
+
+
 html {
     margin: 0;
     height: 100%;
@@ -36,7 +43,7 @@ html {
     --handle-bg: white;
     --alert-bg: #fd627c;
     --alert-color: #4A4949;
-    --coninute-color: #3d3c3c;
+    /* --continue-color: #3d3c3c; */
     --continue-btn-bg: #ff4362;
     --scroll-track: #f89aa876;
     --scroll-thumb: #ee9ba7;
@@ -66,7 +73,7 @@ html.dark {
     /* #702957 */
     ;
     --alert-color: #BFA6AA;
-    --continue-color: #BFA6AA;
+    /* --continue-color: #BFA6AA; */
     --continue-btn-bg: hsl(341 82% 20% / 1);
     --scroll-thumb: #d9a6ae;
     --scroll-thumb-hover: #e795a2d9;
@@ -356,15 +363,25 @@ input:checked+.slider .handle {
     box-sizing: border-box;
     text-align: center;
     border-radius: 1rem;
-    border: 1px var(--bold-text) solid;
     cursor: pointer;
+    border: 1px var(--bold-text) solid;
 }
 
-.question-mark {
-    height: 1.2em;
-    width: 1.2em;
+.settings-btn {
+    height: 1.3em;
+    width: 1.3em;
     margin-left: auto;
     flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent; /* for removing the highlight */
+}
+
+.statistic.endGame .settings-btn {
+    display: none;
+    pointer-events: none;
+}
+
+.statistic.endGame .give-up{
+    margin-left: auto;
 }
 
 .give-up {
@@ -373,6 +390,11 @@ input:checked+.slider .handle {
     break-inside: avoid;
     display: flex;
     align-items: center;
+}
+
+svg .settings-icon {
+    stroke: var(--bold-text); 
+    stroke-width: 2;
 }
 
 /* pause btn */
@@ -481,6 +503,42 @@ input:checked+.slider .handle {
     font-size: 1.3em;
 }
 
+.settings-screen {
+    justify-content: space-evenly;
+}
+
+.btns-container {
+    display: contents;
+}
+
+.settings-text {
+    font-size: 1rem;
+    color: var(--alert-color);
+    font-weight: 700;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-text .plus-btn, .settings-text .minus-btn {
+    display: inline-block;
+    aspect-ratio: 1 / 1;
+    color: var(--alert-color);
+    font-weight: 700;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    /* box-sizing: border-box; */
+    width: 2.6ch;
+}
+
+.num-of-offline-songs {
+    color: var(--alert-color)
+}
+
+
 .exit {
     position: absolute;
     top: 0.7rem;
@@ -509,16 +567,19 @@ input:checked+.slider .handle {
     transform: translate(-50%) rotate(-45deg);
 }
 
-.continue, .start-over {
-    margin-top: max(1.5rem, 8px);
+.popup-btn {
     background-color: #ffffff00;
     border: solid 2px var(--alert-color);
-    color: var(--continue-color);
+    color: var(--alert-color);
     font-weight: 700;
     padding: 2% 5%;
     border-radius: 0.2rem;
     font-size: 1rem;
     cursor: pointer;
+}
+
+.continue, .start-over {
+    margin-top: max(1.5rem, 8px);
 }
 
 .continue {
@@ -567,6 +628,10 @@ input:checked+.slider .handle {
         gap: max(8px, 1rem);
     }
 
+    .settings-screen {
+        gap: max(10px, 1.5rem);
+    }
+
      .continue, .start-over {
         min-height: 48px;
         margin: 0;
@@ -575,11 +640,27 @@ input:checked+.slider .handle {
         font-size: 0.8rem;
      }
 
+     .popup-btn {
+        min-height: 48px;
+     }
+
      .exit {
-        top: 0.5rem;
+        /* top: 0.5rem;
         left: 0.5rem;
-        width: 1rem;
-        height: 1rem;
+        width: max(3rem, 48px);
+        height: max(3rem, 48px);
+        box-sizing: border-box; */
+        top: 0rem;
+        left: 0.2rem;
+        width: max(2.5rem, 48px);
+        height: max(2.5rem, 48px);
+        box-sizing: border-box;
+    }
+    
+    .exit::before, .exit::after {
+        top: 22.5%;
+        height: 55%;
+        width: 11%;
      }
      
     .lyrics-container {
@@ -590,12 +671,21 @@ input:checked+.slider .handle {
         font-size: 0.7rem;
         word-break: keep-all;
         break-inside: avoid;
+        align-items: center;
     }
 
     #give-up {
         border-radius: 0.7em;
-        padding: 0.3em 0.4em;
+        padding: 0.35em 0.4em;
+        font-size: 0.9em;
+        align-self: stretch;
     }
+    
+    .settings-btn {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
 
     .timer-wrapper {
         height: fit-content;
@@ -640,10 +730,38 @@ input:checked+.slider .handle {
     }
 
 
-
     .instructions-text {
         padding: 1.5em;
         font-size: 1rem;
+    }
+
+    .settings-screen {
+         font-size: 1rem;
+         padding-block: 1em;
+    }
+
+    .settings-screen .text {
+        font-size: 1.7em;
+    }
+    
+    .settings-screen .popup-btn {
+        font-size: 0.8em;
+    }
+
+    .settings-text {
+        font-size: 0.7rem;
+        padding-inline: 0.4rem;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+
+    .num-of-offline-songs {
+        font-size: 2em;
+        margin-inline: 1rem;
+    }
+
+    .btns-container {
+        display: flex;
     }
 
     #guess {
@@ -671,7 +789,7 @@ input:checked+.slider .handle {
     opacity: 0;
 }
 
-.endGame {
+.endGame.guess {
     background-color: var(--gameover-bg);
     position: relative;
     top: 0;

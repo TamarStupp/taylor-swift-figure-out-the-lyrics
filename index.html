@@ -39,7 +39,6 @@
 </head>
 
 <body class="scrollStyle">
-    
     <div class="timer-wrapper">
         <div class="dark-mode">
             <!-- moon -->
@@ -102,11 +101,20 @@
     <input type="text" name="guess" class="guess" id="guess" autocomplete="off" class="disabled"
         placeholder="Loading..." readonly />
     <div id="lyrics-container" class="lyrics-container">
-        <div class="statistic">
+        <div class="statistic" id="statistic">
             <div class="score number">Score: <span id="word-amount" class="number"></span></div>
             <div class="border"></div>
             <div id="precent" class="number"></div>
-            <button class="flex-btn question-mark" id="instructions-btn">?</button>
+            <!-- <button class="flex-btn question-mark" id="instructions-btn"> -->
+                <!-- settings icon -->
+                <svg class="flex-btn settings-btn" id="settings-btn" viewBox="0 0 46 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="settings-icon" d="M12.307 26.7059L11.2928 27.7828C10.485 28.6405 10.5022 29.9841 11.3316 30.8209L13.2101 32.7162C14.0448 33.5584 15.3988 33.5816 16.262 32.7686L17.2134 31.8725C17.3223 31.77 17.4807 31.7396 17.6198 31.7946L18.6715 32.2302C18.8087 32.2897 18.8992 32.4231 18.9037 32.5726L18.9428 33.8791C18.9783 35.0643 19.9522 36.0052 21.1379 36L23.8064 35.9881C24.9846 35.9829 25.9468 35.045 25.9821 33.8673L26.0264 32.3886C26.0307 32.2458 26.1135 32.1171 26.2417 32.054L27.3171 31.6086C27.4523 31.5625 27.6019 31.595 27.7059 31.6929L28.7828 32.7072C29.6405 33.5149 30.9841 33.4978 31.8209 32.6684L33.7162 30.7899C34.5584 29.9551 34.5816 28.6012 33.7686 27.738L32.8725 26.7865C32.77 26.6776 32.7396 26.5193 32.7946 26.3802L33.2302 25.3285C33.2897 25.1913 33.4231 25.1008 33.5726 25.0963L34.8791 25.0572C36.0643 25.0217 37.0052 24.0478 37 22.862L36.9881 20.1936C36.9829 19.0154 36.045 18.0532 34.8673 18.0179L33.3886 17.9736C33.3311 17.9718 33.2758 17.9574 33.2262 17.9323C33.0785 17.8577 33.0355 17.6768 32.9987 17.5155L32.8916 17.0456C32.827 16.7621 32.6732 16.4251 32.8725 16.2134V16.2134L33.7686 15.262C34.5816 14.3988 34.5583 13.0448 33.7161 12.2101L31.8209 10.3316C30.9841 9.50219 29.6405 9.48504 28.7828 10.2928L27.7059 11.307C27.6019 11.405 27.4523 11.4374 27.3171 11.3914L26.2417 10.946C26.1135 10.8829 26.0307 10.7542 26.0264 10.6114L25.9821 9.13271C25.9468 7.95502 24.9846 7.01712 23.8064 7.01188L21.1379 7.00002C19.9522 6.99475 18.9783 7.93567 18.9428 9.12093L18.9037 10.4274C18.8992 10.5769 18.8087 10.7103 18.6715 10.7698L17.6198 11.2054C17.4807 11.2604 17.3223 11.23 17.2134 11.1274L16.262 10.2313C15.3988 9.41833 14.0448 9.44161 13.2101 10.2838L11.3316 12.1791C10.5022 13.0159 10.485 14.3594 11.2928 15.2172L12.307 16.2941C12.405 16.3981 12.4374 16.5477 12.3914 16.6829L11.946 17.7583C11.8829 17.8865 11.7542 17.9693 11.6114 17.9736L10.1327 18.0179C8.95502 18.0532 8.01712 19.0154 8.01188 20.1936L8.00002 22.862C7.99475 24.0478 8.93567 25.0217 10.1209 25.0572L11.4274 25.0963C11.5769 25.1008 11.7103 25.1913 11.7698 25.3285L12.3279 26.616C12.3375 26.6443 12.3465 26.6601 12.3538 26.6684M12.307 26.7059C12.3283 26.6833 12.3435 26.6726 12.3538 26.6684M12.307 26.7059C12.3844 26.6237 12.3812 26.6997 12.3538 26.6684M12.3538 26.6684C12.3808 26.6574 12.3737 26.6911 12.3538 26.6684ZM27.5745 21.4284C27.5745 24.1986 25.3288 26.4443 22.5586 26.4443C19.7885 26.4443 17.5428 24.1986 17.5428 21.4284C17.5428 18.6583 19.7885 16.4126 22.5586 16.4126C25.3288 16.4126 27.5745 18.6583 27.5745 21.4284Z"/>
+                    </svg>
+            <!-- </button> -->
+
+                    
+
+            <!-- <button class="flex-btn question-mark" id="instructions-btn">?</button> -->
             <button class="flex-btn give-up" id="give-up">give up</button>
         </div>
         <div id="lyrics"></div>
@@ -118,8 +126,31 @@
         <div class="alert-wrapper pause-screen">
             <div class="text">Game Paused</div>
             <div class="close-btn exit"></div>
-            <button class="start-over">Start Over</button>
-            <button class="close-btn continue">Continue</button>
+            <button class="start-over popup-btn" id="start-over">Start Over</button>
+            <button class="close-btn continue popup-btn">Continue</button>
+        </div>
+    </div>
+    <div class="black-screen" id="settings">
+        <div class="alert-wrapper settings-screen">
+            <div class="text">Settings</div>
+            <div class="settings-close-btn exit" id="settings-close-btn"></div>
+            <button class="popup-btn instructions-btn" id="instructions-btn">Instructions</button>
+            <!-- <button class="popup-btn filter" id="filter">Filter by album</button> -->
+            <div class="settings-text">Number of songs to play offline: 
+                <span class="btns-container">
+                    <svg class="minus-btn" id="minus-btn" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="17" stroke="currentColor" stroke-width="2"/>
+                        <line x1="23" y1="19" x2="13" y2="19" stroke="currentColor" stroke-width="2"/>
+    
+                        </svg>
+                    <span class="num-of-offline-songs number" id="num-of-offline-songs">5</span>
+                    <svg class="plus-btn" id="plus-btn" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="17" stroke-width="2" stroke="currentColor"/>
+                        <line x1="23" y1="19" x2="13" y2="19" stroke-width="2" stroke="currentColor"/>
+                        <line x1="18" y1="24" x2="18" y2="14" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </span>
+            </div>
         </div>
     </div>
     <div class="black-screen" id="win">

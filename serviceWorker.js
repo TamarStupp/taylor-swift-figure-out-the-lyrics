@@ -1,8 +1,10 @@
-const OFFLINE_SONGS = 5;
-const NUMBER_OF_SONGS = 23;
-const VERSION = 1;
+let OFFLINE_SONGS = 5;
+// songs without TTPD: 199
+const NUMBER_OF_SONGS = 231;
+const VERSION = 3;
 const SONG_CACHE_NAME = `songs-${VERSION}`;
 const GENERAL_CACHE_NAME = `general-${VERSION}`;
+const broadcast = new BroadcastChannel('offlineSongs');
 let resourcesInCache;
 let failedCaches = 0;
 const files = [
@@ -37,7 +39,17 @@ const addSongsToCache = (cache) => {
 		})
 }
 
+
 self.addEventListener("install", (event) => {
+	broadcast.postMessage('What is the number of offline songs?');
+	broadcast.onmessage = (event) => {
+		OFFLINE_SONGS = Number(event.data);
+		caches.open(SONG_CACHE_NAME).then(cache => {
+				if (resourcesInCache < OFFLINE_SONGS) {
+					addSongsToCache(cache);
+				}
+			})
+	};
 	failedCaches = 0;
 	//add songs to song-cache
 	event.waitUntil(
@@ -57,7 +69,8 @@ self.addEventListener("install", (event) => {
 })
 
 self.addEventListener("fetch", (event) => {
-	if (!event.request.url.includes('randomSong')) {
+	if (!event.request.url.includes('allSongs')) {
+		// Temporary disable caching
 		event.respondWith(
 			caches.open(GENERAL_CACHE_NAME).then(cache => {
 				return cache.match(event.request.url).then(response => {
@@ -81,7 +94,7 @@ self.addEventListener("fetch", (event) => {
 					onlineRes = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
 					addSongsToCache(cache);
 					return onlineRes;
-				} catch {
+				} catch (error) {
 					return new Response("Something went wrong", { status: 502, error: "Unable to  connect to the internet" })
 				}
 
@@ -93,7 +106,8 @@ self.addEventListener("fetch", (event) => {
 
 // clear old caches
 self.addEventListener('activate', event => {
-	console.log('activated')
+	console.log('activated');
+	failedCaches = 0;
 	event.waitUntil(
 		caches.keys().then(cacheNames => {
 			return Promise.all(
@@ -106,3 +120,4 @@ self.addEventListener('activate', event => {
 		})
 	)
 })
+
