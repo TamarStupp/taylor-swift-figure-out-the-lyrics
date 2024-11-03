@@ -15,6 +15,7 @@ const checkboxSvg = `<svg class="checkbox-svg" viewBox="0 0 41 41" fill="none" x
 </svg>
 `;
 let filteredAlbums = [];
+let filteredAlbumsCopy = [];
 let filteredStr = '';
 let isUsingFilter = false;
 
@@ -218,6 +219,22 @@ const finishGame = () => {
 
 const customAlert = (wrapper, goBackTo) => {
     document.querySelector("body").style.overflow = 'hidden';
+    // reset filter screen so changes will not be saved unless specifically told so.
+    if (wrapper.id = 'filter') {
+        filteredAlbumsCopy = [...filteredAlbums];
+        console.log(filteredAlbums);
+        let isAllChecked = true;
+        for (el of document.querySelectorAll('.checkbox-input')) {
+            if (!(filteredAlbums.includes(el.dataset.album))) {
+                isAllChecked = false;
+                el.checked = false;
+            } else {
+                el.checked = true;
+            }
+        }
+        document.getElementById('choose-all-input').checked = isAllChecked;
+        document.getElementById('album-num').innerText = filteredAlbums.length;
+    }
     
     if (!isPaused) {
         isPaused = true;
@@ -258,6 +275,17 @@ const customAlert = (wrapper, goBackTo) => {
                     isBtnPressed = true;
                     resolve(true);
                     break;
+                } case ("filter-close-btn"): {
+                    if (goBackTo) {
+                        event.currentTarget.classList.add('none'); 
+                        customAlert(goBackTo);
+                    } else {
+                        resolve(true);
+                    }
+                    isBtnPressed = true;
+                    filteredAlbums = [...filteredAlbumsCopy];
+                    console.log(filteredAlbums);
+                    break;
                 } case ("plus-btn"): {
                     if (offlineSongs < 30) {
                         offlineSongs++;
@@ -277,27 +305,13 @@ const customAlert = (wrapper, goBackTo) => {
                     resolve(false);
                     break;
                 } case ("filter-accept"): {
-                    let textToAlbumList = '';
-                    if (filteredStr === "All" || filteredStr === "all") {
-                        isUsingFilter = false;
-                        textToAlbumList = "all";
-                    } else {
-                        isUsingFilter = true;
-                        const loopStop = Math.min(filteredAlbums.length, 3)
-                        for (let i = 0; i < loopStop; i++) {
-                            console.log('hi');
-                            textToAlbumList += `${filteredAlbums[i]}, `;
-                        }
-
-                        if (filteredAlbums.length > 3) {
-                            textToAlbumList += `and ${filteredAlbums.length - 3} others.`;
-                        } else {
-                            textToAlbumList = textToAlbumList.slice(0, -3) + '.' ;
-                        }
+                    if (filteredAlbums.length > 0) {
+                        document.getElementById("album-name").innerText = filteredStr;
+                        localStorage.setItem('filterList', JSON.stringify(filteredAlbums));
+                        isBtnPressed = true;
+                        restart();
+                        resolve(false);
                     }
-                    document.getElementById("album-name").innerText = textToAlbumList;
-                    resolve(true);
-                    localStorage.setItem('filterList', JSON.stringify(filteredAlbums));
                     break;
                 }
             }
@@ -361,7 +375,7 @@ window.addEventListener("load", () => {
     document.getElementById('change-albums').addEventListener("click", () => customAlert(document.querySelector('#filter')))
     // upade saved offline songs preference
     document.getElementById("num-of-offline-songs").innerText = offlineSongs;
-    filteredAlbums = JSON.parse(localStorage.getItem('filteredAlbums'));
+    filteredAlbums = JSON.parse(localStorage.getItem('filterList'));
     if (!filteredAlbums) {
         filteredAlbums = [...songMap.keys()];
     }
@@ -387,7 +401,13 @@ const onFilterInput = (event) => {
     } else {
         filteredAlbums.splice(filteredAlbums.indexOf(event.currentTarget.dataset.album), 1);   
     }
-    filteredStr = filteredAlbums.join(", ") + '.';
+
+    // truncate more than 3 albums
+    // filteredStr = filteredAlbums.slice(0, 3).join(", ");
+    // if(filteredAlbums.length > 3) {filteredStr += ` and ${filteredAlbums.length - 3} others.`}
+
+    // dont truncate albums
+    filteredStr = filteredAlbums.join(", ") + ".";
 
     // check if all boxes are selected
     if (!document.querySelector("input.checkbox-input:not(:checked)")) {
@@ -396,8 +416,9 @@ const onFilterInput = (event) => {
     } else {
         document.querySelector('#choose-all-input').checked = false;
     }
-    
-    document.getElementById('album-list').innerText = filteredStr;
+
+    document.getElementById('album-num').innerText = filteredAlbums.length;
+    document.getElementById('filter-accept').disabled = (filteredAlbums.length === 0); 
 }
 
 const onChooseAll = (event) => {
@@ -416,7 +437,8 @@ const onChooseAll = (event) => {
         filteredAlbums = [];
         filteredStr = 'none';
     }
-    document.getElementById('album-list').innerText = filteredStr;
+    document.getElementById('album-num').innerText = filteredAlbums.length;
+    document.getElementById('filter-accept').disabled = (filteredAlbums.length === 0); 
 }
 
 const createFilterScreen = () => {
@@ -426,7 +448,7 @@ const createFilterScreen = () => {
        newEl.classList = "checkbox-container choose-all";
        newEl.id = 'choose-all';
        newEl.innerHTML = `
-       <input class="choose-all-input" id="choose-all-input" type="checkbox" checked>
+       <input class="choose-all-input" id="choose-all-input" type="checkbox">
        ${checkboxSvg}
        <span class='checkbox-text'>Choose All</span>`;
        newEl.querySelector('#choose-all-input').addEventListener('input', onChooseAll);
@@ -435,20 +457,26 @@ const createFilterScreen = () => {
        // add songs checkboxes
        let isAllChecked = true;
        for ([key, value] of songMap) {
-           if (!filteredAlbums.includes(key)) {
+           if (!(filteredAlbums.includes(key))) {
                isAllChecked = false;
            }
-   
+
            newEl = document.createElement('label');
            newEl.classList.add("checkbox-container");
            newEl.innerHTML = `
-               <input class="checkbox-input" type="checkbox" data-album="${key}" checked="${filteredAlbums.includes(key)}">
+               <input class="checkbox-input" type="checkbox" data-album="${key}" ${filteredAlbums.includes(key) ? "checked": ''}>
                ${checkboxSvg}
                <span class='checkbox-text'>${key}</span>`;
                newEl.querySelector('.checkbox-input').addEventListener('input', onFilterInput);
                document.getElementById('choice-container').appendChild(newEl);
-           }
-           document.getElementById('choose-all-input').checked = isAllChecked;
+        }
+        document.getElementById('choose-all-input').checked = isAllChecked;
+        if (isAllChecked) {
+            filteredStr = "All"
+        } else {
+            filteredStr = filteredAlbums.join(", ") + ".";
+        }
+        document.getElementById("album-name").innerText = filteredStr;
 }
 
 

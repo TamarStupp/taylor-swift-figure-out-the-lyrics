@@ -97,7 +97,7 @@
     </div>
     <h1>The Ultimate Taylor Swift guess the lyrics</h1>
     <p>Code Created by <a href="https://github.com/TamarStupp">Tamar Stupp</a></p>
-    <p>The  song is from the albums: <span id="album-name">All</span> <button class="change-albums flex-btn " id="change-albums">change</button></p>
+    <p>The  song is from one of the albums: <span class="number" id="album-name">All</span> <button class="change-albums flex-btn " id="change-albums">change</button></p>
     <label for="guess"></label>
     <input type="text" name="guess" class="guess" id="guess" autocomplete="off" class="disabled"
         placeholder="Loading..." readonly />
@@ -157,10 +157,10 @@
     <div class="black-screen none" id="filter">
         <div class="alert-wrapper filter-screen no-select">
             <div class="text">Filter By Album</div>
-            <div class="close-btn exit"></div>
+            <div class="exit" id="filter-close-btn"></div>
             <div id="choice-container" class="choice-container"></div>
             <div class="filter-text">You chose 
-                <span id="album-list">11</span> albums
+                <span class="number" id="album-num">11</span> albums
             </div>
             <button class="popup-btn filter-accept" id="filter-accept">Accept and restart</button>
         </div>
