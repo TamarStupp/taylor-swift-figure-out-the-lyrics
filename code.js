@@ -9,17 +9,38 @@ const restartIcon = `<svg viewBox="0 0 31 28" fill="none" xmlns="http://www.w3.o
 <path d="M10.6962 22.6168C10.0167 22.1429 9.08169 22.3096 8.60777 22.989C8.13385 23.6685 8.3005 24.6035 8.97998 25.0775L10.6962 22.6168ZM4.49195 13.2169L3.12185 13.8275C3.29985 14.2269 3.64328 14.5287 4.06222 14.654C4.48117 14.7793 4.93393 14.7155 5.30196 14.4794L4.49195 13.2169ZM9.25288 11.9445C9.95013 11.4971 10.1527 10.5692 9.70536 9.87197C9.258 9.17472 8.33011 8.97213 7.63285 9.41949L9.25288 11.9445ZM3.62352 7.58326C3.2863 6.82657 2.39952 6.48653 1.64283 6.82375C0.886143 7.16097 0.546099 8.04776 0.883319 8.80444L3.62352 7.58326ZM7.82475 7.81245C11.1207 3.0868 17.7752 1.95092 22.7096 5.3925L24.4258 2.93188C18.1947 -1.41411 9.6508 -0.0498022 5.36413 6.09625L7.82475 7.81245ZM22.7096 5.3925C27.644 8.83407 28.877 15.4712 25.581 20.1969L28.0417 21.9131C32.3283 15.767 30.6569 7.27786 24.4258 2.93188L22.7096 5.3925ZM25.581 20.1969C22.285 24.9225 15.6306 26.0584 10.6962 22.6168L8.97998 25.0775C15.2111 29.4234 23.755 28.0591 28.0417 21.9131L25.581 20.1969ZM5.99078 13.2762C6.06623 11.3694 6.66341 9.47753 7.82475 7.81245L5.36413 6.09625C3.86274 8.24888 3.0904 10.6993 2.99313 13.1576L5.99078 13.2762ZM7.63285 9.41949L3.68194 11.9544L5.30196 14.4794L9.25288 11.9445L7.63285 9.41949ZM0.883319 8.80444L3.12185 13.8275L5.86206 12.6063L3.62352 7.58326L0.883319 8.80444Z" fill="var(--bold-text)"/>
 </svg>
 `;
+const checkboxSvg = `<svg class="checkbox-svg" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="1" y="1" width="39" height="39" rx="12" fill="var(--checkbox-color)" stroke="var(--checkbox-stroke)" stroke-width="2"/>
+<path class="v" d="M10 20.2269C13.5 22 14.7497 27.8264 14.7497 27.8264C14.7497 27.8264 20.5 16.5 30.5762 12" stroke="var(--checkbox-stroke)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+let filteredAlbums = [];
+let filteredStr = '';
+let isUsingFilter = false;
+
+const songList = [
+	["taylor swift", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+	["fearless", [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 89, 90, 91, 92, 93, 94]],
+	["speak now", [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88]],
+	["red", [110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138,]],
+	["1989", [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]],
+	["reputation", [95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109]],
+	["lover", [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 177, 178, 179, 180, 181,]],
+	["folklore", [139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,]],
+	["evermore", [182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,]],
+	["midnights", [155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 199]],
+	["the tortured poets department", [200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231]]
+]
+
+const songMap = new Map(songList);
 const NUMBER_OF_SONGS = 231;
 const broadcast = new BroadcastChannel('offlineSongs');
-
-
 /**
  * @param {Array} chosenAlbums deafult: empty arry. The names of 
  * all the albums the song can be from (filtering)
  */
 const getRandomSongLyrics = async () => {
-    const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
-    let response = await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
+    let response = await fetchSong();
     // if retriving the song lyrics after five tries is impossible, show error message
     if (!response.ok) {
         console.error(`fetch failed. Response status: ${response.status}`);
@@ -49,6 +70,11 @@ const getRandomSongLyrics = async () => {
     // activate timer
     timerInterval = setInterval(updateTimer, 1000);
     isPaused = false;
+}
+
+const fetchSong = async () => {
+    const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
+    return await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
 }
 
 const changeVisibility = (e) => {
@@ -189,7 +215,10 @@ const finishGame = () => {
     document.getElementById('pause-btn').style.pointerEvents = 'none';
 }
 
+
 const customAlert = (wrapper, goBackTo) => {
+    document.querySelector("body").style.overflow = 'hidden';
+    
     if (!isPaused) {
         isPaused = true;
         clearInterval(timerInterval);
@@ -202,7 +231,7 @@ const customAlert = (wrapper, goBackTo) => {
             let isBtnPressed = false;
             if (classList.contains('close-btn')) {
                 if (goBackTo) {
-                    event.currentTarget.style.display = 'none'; 
+                    event.currentTarget.classList.add('none'); 
                     customAlert(goBackTo);
                 } else {
                     resolve(true);
@@ -217,7 +246,7 @@ const customAlert = (wrapper, goBackTo) => {
                     isBtnPressed = true;
                     break;
                 } case ("instructions-btn"): {
-                    event.currentTarget.style.display = 'none';
+                    event.currentTarget.classList.add('none');
                     customAlert(document.querySelector("#instructions-text"), event.currentTarget);
                     isBtnPressed = true;
                     resolve(false);
@@ -241,6 +270,35 @@ const customAlert = (wrapper, goBackTo) => {
                         document.getElementById('num-of-offline-songs').innerText = offlineSongs;
                     }
                     break;
+                } case ("goto-filter"): {
+                    event.currentTarget.classList.add('none');
+                    customAlert(document.querySelector("#filter"), event.currentTarget);
+                    isBtnPressed = true;
+                    resolve(false);
+                    break;
+                } case ("filter-accept"): {
+                    let textToAlbumList = '';
+                    if (filteredStr === "All" || filteredStr === "all") {
+                        isUsingFilter = false;
+                        textToAlbumList = "all";
+                    } else {
+                        isUsingFilter = true;
+                        const loopStop = Math.min(filteredAlbums.length, 3)
+                        for (let i = 0; i < loopStop; i++) {
+                            console.log('hi');
+                            textToAlbumList += `${filteredAlbums[i]}, `;
+                        }
+
+                        if (filteredAlbums.length > 3) {
+                            textToAlbumList += `and ${filteredAlbums.length - 3} others.`;
+                        } else {
+                            textToAlbumList = textToAlbumList.slice(0, -3) + '.' ;
+                        }
+                    }
+                    document.getElementById("album-name").innerText = textToAlbumList;
+                    resolve(true);
+                    localStorage.setItem('filterList', JSON.stringify(filteredAlbums));
+                    break;
                 }
             }
             
@@ -251,12 +309,13 @@ const customAlert = (wrapper, goBackTo) => {
         });
     });
     promise.then((isStartTimer) => {
-        wrapper.style.display = 'none';
+        wrapper.classList.add('none');
         if (isStartTimer) {timerInterval = setInterval(updateTimer, 1000);}
         document.addEventListener("visibilitychange", changeVisibility);
         isPaused = false;
+        document.querySelector("body").style.overflow = 'auto';
     })
-    wrapper.style.display = 'block';
+    wrapper.classList.remove('none');
     return (promise);
 }
 
@@ -285,7 +344,7 @@ const restart = () => {
 
 // install service worker
 navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
-    broadcast.onmessage = () => {
+    broadcast.onmessage = (event) => {
         console.log('window received message');
         broadcast.postMessage(offlineSongs);
     }
@@ -299,9 +358,18 @@ window.addEventListener("load", () => {
     //add event listeners
     document.getElementById('pause-btn').addEventListener('click', () => customAlert(document.querySelector("#pause-text")));
     document.getElementById('settings-btn').addEventListener('click', () => customAlert(document.querySelector("#settings")));
-    
+    document.getElementById('change-albums').addEventListener("click", () => customAlert(document.querySelector('#filter')))
     // upade saved offline songs preference
     document.getElementById("num-of-offline-songs").innerText = offlineSongs;
+    filteredAlbums = JSON.parse(localStorage.getItem('filteredAlbums'));
+    if (!filteredAlbums) {
+        filteredAlbums = [...songMap.keys()];
+    }
+    
+    createFilterScreen();
+
+
+
     // detect user preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add("dark");
@@ -312,3 +380,75 @@ window.addEventListener("load", () => {
         document.documentElement.classList.toggle("dark");
     })
 })
+
+const onFilterInput = (event) => {
+    if (event.currentTarget.checked) {
+        filteredAlbums.push(event.currentTarget.dataset.album);
+    } else {
+        filteredAlbums.splice(filteredAlbums.indexOf(event.currentTarget.dataset.album), 1);   
+    }
+    filteredStr = filteredAlbums.join(", ") + '.';
+
+    // check if all boxes are selected
+    if (!document.querySelector("input.checkbox-input:not(:checked)")) {
+        filteredStr = "All";
+        document.querySelector('#choose-all-input').checked = true;
+    } else {
+        document.querySelector('#choose-all-input').checked = false;
+    }
+    
+    document.getElementById('album-list').innerText = filteredStr;
+}
+
+const onChooseAll = (event) => {
+    const isChecked = event.currentTarget.checked;
+    // update all elements to match
+    for (element of document.querySelectorAll('.checkbox-input')) {
+        element.checked = isChecked;
+        if (isChecked) {
+            filteredAlbums.push(element.dataset.album);
+        }
+    }
+    // update filteredStr
+    if (isChecked) {
+        filteredStr = 'All';
+    } else {
+        filteredAlbums = [];
+        filteredStr = 'none';
+    }
+    document.getElementById('album-list').innerText = filteredStr;
+}
+
+const createFilterScreen = () => {
+       let newEl;
+       // add Choose all btn
+       newEl = document.createElement('label');
+       newEl.classList = "checkbox-container choose-all";
+       newEl.id = 'choose-all';
+       newEl.innerHTML = `
+       <input class="choose-all-input" id="choose-all-input" type="checkbox" checked>
+       ${checkboxSvg}
+       <span class='checkbox-text'>Choose All</span>`;
+       newEl.querySelector('#choose-all-input').addEventListener('input', onChooseAll);
+       document.getElementById('choice-container').appendChild(newEl);
+       
+       // add songs checkboxes
+       let isAllChecked = true;
+       for ([key, value] of songMap) {
+           if (!filteredAlbums.includes(key)) {
+               isAllChecked = false;
+           }
+   
+           newEl = document.createElement('label');
+           newEl.classList.add("checkbox-container");
+           newEl.innerHTML = `
+               <input class="checkbox-input" type="checkbox" data-album="${key}" checked="${filteredAlbums.includes(key)}">
+               ${checkboxSvg}
+               <span class='checkbox-text'>${key}</span>`;
+               newEl.querySelector('.checkbox-input').addEventListener('input', onFilterInput);
+               document.getElementById('choice-container').appendChild(newEl);
+           }
+           document.getElementById('choose-all-input').checked = isAllChecked;
+}
+
+

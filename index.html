@@ -97,6 +97,7 @@
     </div>
     <h1>The Ultimate Taylor Swift guess the lyrics</h1>
     <p>Code Created by <a href="https://github.com/TamarStupp">Tamar Stupp</a></p>
+    <p>The  song is from the albums: <span id="album-name">All</span> <button class="change-albums flex-btn " id="change-albums">change</button></p>
     <label for="guess"></label>
     <input type="text" name="guess" class="guess" id="guess" autocomplete="off" class="disabled"
         placeholder="Loading..." readonly />
@@ -122,7 +123,7 @@
     </div>
     <footer>The rights for the lyrics reserved to &copyTaylor Swift</footer>
     <!-- alerts and popups -->
-    <div class="black-screen" id="pause-text">
+    <div class="black-screen none" id="pause-text">
         <div class="alert-wrapper pause-screen">
             <div class="text">Game Paused</div>
             <div class="close-btn exit"></div>
@@ -130,12 +131,12 @@
             <button class="close-btn continue popup-btn">Continue</button>
         </div>
     </div>
-    <div class="black-screen" id="settings">
+    <div class="black-screen none" id="settings">
         <div class="alert-wrapper settings-screen">
             <div class="text">Settings</div>
             <div class="settings-close-btn exit" id="settings-close-btn"></div>
             <button class="popup-btn instructions-btn" id="instructions-btn">Instructions</button>
-            <!-- <button class="popup-btn filter" id="filter">Filter by album</button> -->
+            <button class="popup-btn goto-filter" id="goto-filter">Filter by album</button>
             <div class="settings-text">Number of songs to play offline: 
                 <span class="btns-container">
                     <svg class="minus-btn" id="minus-btn" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -143,7 +144,7 @@
                         <line x1="23" y1="19" x2="13" y2="19" stroke="currentColor" stroke-width="2"/>
     
                         </svg>
-                    <span class="num-of-offline-songs number" id="num-of-offline-songs">5</span>
+                    <span class="num-of-offline-songs number no-select" id="num-of-offline-songs">5</span>
                     <svg class="plus-btn" id="plus-btn" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="18" cy="18" r="17" stroke-width="2" stroke="currentColor"/>
                         <line x1="23" y1="19" x2="13" y2="19" stroke-width="2" stroke="currentColor"/>
@@ -153,13 +154,18 @@
             </div>
         </div>
     </div>
-    <div class="black-screen" id="win">
-        <div class="alert-wrapper">
-            <div class="text">You Won!</div>
+    <div class="black-screen none" id="filter">
+        <div class="alert-wrapper filter-screen no-select">
+            <div class="text">Filter By Album</div>
             <div class="close-btn exit"></div>
+            <div id="choice-container" class="choice-container"></div>
+            <div class="filter-text">You chose 
+                <span id="album-list">11</span> albums
+            </div>
+            <button class="popup-btn filter-accept" id="filter-accept">Accept and restart</button>
         </div>
     </div>
-    <div class="black-screen" id="instructions-text">
+    <div class="black-screen none" id="instructions-text">
         <div class="alert-wrapper">
             <div class="instructions-text text">Your goal is to guess the correct Taylor Swift song. Each rectangle
                 represents a single lyric.
@@ -171,7 +177,13 @@
             <div class="close-btn exit"></div>
         </div>
     </div>
-    <div class="black-screen" id="no-song">
+    <div class="black-screen none" id="win">
+        <div class="alert-wrapper">
+            <div class="text">You Won!</div>
+            <div class="close-btn exit"></div>
+        </div>
+    </div>
+    <div class="black-screen none" id="no-song">
         <div class="alert-wrapper">
             <div class="text">It's me. Hi, I'm the problem it's me.<br>
                 <div class="small-text">Something went wrong,
@@ -180,7 +192,7 @@
             </div>
         </div>
     </div>
-    <div class="black-screen" id="no-internet">
+    <div class="black-screen none" id="no-internet">
         <div class="alert-wrapper">
             <div class="text">You're on your own kid<br>
                 <div class="small-text">It seems you aren't connected to the internet. Please check your connection and try again.
