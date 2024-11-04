@@ -52,7 +52,7 @@ const getRandomSongLyrics = async () => {
     // activate input and start game
     document.getElementById('guess').setAttribute('placeholder', 'Guess the lyrics');
     document.getElementById('guess').readOnly = false;
-    document.getElementById('guess').classList.remove('disabled');
+    document.getElementById('guess').classList.remove('guess-disabled');
     document.getElementById('guess').addEventListener('input', onInput);
     document.getElementById('word-amount').innerText = `0/${lyrics.length}`;
     document.getElementById('give-up').addEventListener('click', finishGame);
@@ -72,16 +72,29 @@ const fetchSong = async () => {
     if (filteredAlbums.length >= songMap.size) {
         // no filtering needed
         const randomSongNum = Math.floor(Math.random() * NUMBER_OF_SONGS);
-        response =  await fetch(`./songs/allSongs/song${randomSongNum}.txt?filter=false`);
+        response = await fetch(`./songs/allSongs/song${randomSongNum}.txt?filter=false`);
     } else {
         let pool = [];
         for (key of filteredAlbums) {
-            pool.push(...songMap.get(key));
+            console.log(key);
+            if (songMap.get(key)) {
+                pool.push(...songMap.get(key));
+            } else {
+                filteringAvailable = false;
+            }
         }
-        const randomSongNum = Math.floor(Math.random() * pool.length);
-        response = await fetch(`./songs/allSongs/song${pool[randomSongNum]}.txt?filter=true`);
-    }
 
+        if (filteringAvailable) {
+            const randomSongNum = Math.floor(Math.random() * pool.length);
+            response = await fetch(`./songs/allSongs/song${pool[randomSongNum]}.txt?filter=true`);
+        } else {
+            localStorage.removeItem('filterList');
+            console.log("Oops");
+            const randomSongNum = Math.floor(Math.random() * NUMBER_OF_SONGS);
+            response = await fetch(`./songs/allSongs/song${randomSongNum}.txt?filter=false`);
+        }
+    }
+    
     // check for errors
     if (!response.ok) {
         console.error(`fetch failed. Response status: ${response.status}`);
@@ -494,6 +507,8 @@ const createFilterScreen = () => {
 
         if (filteringAvailable) {
             document.getElementById("album-name").innerText = `The song is from one of the albums: ${filteredStr}`;
+        } else {
+            document.getElementById("album-name").innerText = 'There was a problem with filtering albums. Please try again.';    
         }
 }
 

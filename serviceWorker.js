@@ -29,13 +29,14 @@ const addSongsToCache = (cache) => {
 				resourcesInCache++;
 				addSongsToCache(cache);
 			})
-			.catch(() => {
+			.catch((error) => {
 				// exit the loop if failed to cache too many times
 				if (failedCaches < OFFLINE_SONGS * 3) {
 					addSongsToCache(cache);
 					failedCaches++;
 				} else {
 					console.error('A problem occured with caching resources');
+					console.error(error);
 				}
 			})
 	}
@@ -95,6 +96,7 @@ self.addEventListener("fetch", (event) => {
 					} catch (error) {
 						tries++;
 						if (tries === 2) {
+							console.error(error);
 							broadcast.postMessage('filtering failed')
 							return await getSongFromCache(event, false);
 						}
