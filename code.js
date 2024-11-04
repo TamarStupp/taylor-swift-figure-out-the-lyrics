@@ -3,39 +3,41 @@ let uniqueLyrics = [];
 let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
-let filteringAvailable = true;
 let isPaused = false;
 let offlineSongs = localStorage.getItem('offlineSongs') || 5;
 const restartIcon = `<svg viewBox="0 0 31 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="restart-icon">
 <path d="M10.6962 22.6168C10.0167 22.1429 9.08169 22.3096 8.60777 22.989C8.13385 23.6685 8.3005 24.6035 8.97998 25.0775L10.6962 22.6168ZM4.49195 13.2169L3.12185 13.8275C3.29985 14.2269 3.64328 14.5287 4.06222 14.654C4.48117 14.7793 4.93393 14.7155 5.30196 14.4794L4.49195 13.2169ZM9.25288 11.9445C9.95013 11.4971 10.1527 10.5692 9.70536 9.87197C9.258 9.17472 8.33011 8.97213 7.63285 9.41949L9.25288 11.9445ZM3.62352 7.58326C3.2863 6.82657 2.39952 6.48653 1.64283 6.82375C0.886143 7.16097 0.546099 8.04776 0.883319 8.80444L3.62352 7.58326ZM7.82475 7.81245C11.1207 3.0868 17.7752 1.95092 22.7096 5.3925L24.4258 2.93188C18.1947 -1.41411 9.6508 -0.0498022 5.36413 6.09625L7.82475 7.81245ZM22.7096 5.3925C27.644 8.83407 28.877 15.4712 25.581 20.1969L28.0417 21.9131C32.3283 15.767 30.6569 7.27786 24.4258 2.93188L22.7096 5.3925ZM25.581 20.1969C22.285 24.9225 15.6306 26.0584 10.6962 22.6168L8.97998 25.0775C15.2111 29.4234 23.755 28.0591 28.0417 21.9131L25.581 20.1969ZM5.99078 13.2762C6.06623 11.3694 6.66341 9.47753 7.82475 7.81245L5.36413 6.09625C3.86274 8.24888 3.0904 10.6993 2.99313 13.1576L5.99078 13.2762ZM7.63285 9.41949L3.68194 11.9544L5.30196 14.4794L9.25288 11.9445L7.63285 9.41949ZM0.883319 8.80444L3.12185 13.8275L5.86206 12.6063L3.62352 7.58326L0.883319 8.80444Z" fill="var(--bold-text)"/>
 </svg>
 `;
+
+// variables for filtering
 const checkboxSvg = `<svg class="checkbox-svg" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="1" y="1" width="39" height="39" rx="12" fill="var(--checkbox-color)" stroke="var(--checkbox-stroke)" stroke-width="2"/>
 <path class="v" d="M10 20.2269C13.5 22 14.7497 27.8264 14.7497 27.8264C14.7497 27.8264 20.5 16.5 30.5762 12" stroke="var(--checkbox-stroke)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
-let filteredAlbums = JSON.parse(localStorage.getItem('filterList'));
-let filteredAlbumsCopy = [];
-let filteredStr = '';
-let isUsingFilter = false;
-
 const songList = [
-	["taylor swift", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
-	["fearless", [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 89, 90, 91, 92, 93, 94]],
-	["speak now", [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88]],
-	["red", [110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138,]],
+    ["Taylor Swift", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+	["Fearless", [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 89, 90, 91, 92, 93, 94]],
+	["Speak Now", [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88]],
+	["Red", [110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138,]],
 	["1989", [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]],
-	["reputation", [95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109]],
-	["lover", [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 177, 178, 179, 180, 181,]],
-	["folklore", [139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,]],
-	["evermore", [182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,]],
-	["midnights", [155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 199]],
-	["the tortured poets department", [200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231]]
+	["Reputation", [95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109]],
+	["Lover", [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 177, 178, 179, 180, 181,]],
+	["Folklore", [139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,]],
+	["Evermore", [182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,]],
+	["Midnights", [155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 199]],
+	["The Tortured Poets Department", [200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231]]
 ]
+const NUMBER_OF_SONGS = 232;
 
 const songMap = new Map(songList);
-const NUMBER_OF_SONGS = 232;
+let filteringAvailable = true;
+let filteredAlbumsCopy = [];
+let filteredAlbums = JSON.parse(localStorage.getItem('filterList')) || [...songMap.keys()];
+let filteredStr = '';
+
+
 const broadcast = new BroadcastChannel('offlineSongs');
 /**
  * @param {Array} chosenAlbums deafult: empty arry. The names of 
@@ -395,9 +397,6 @@ window.addEventListener("load", () => {
     document.getElementById('settings-btn').addEventListener('click', () => customAlert(document.querySelector("#settings")));
     // upade saved offline songs preference
     document.getElementById("num-of-offline-songs").innerText = offlineSongs;
-    if (!filteredAlbums) {
-        filteredAlbums = [...songMap.keys()];
-    }
     
     createFilterScreen();
     document.getElementById('change-albums')?.addEventListener("click", () =>customAlert(document.querySelector('#filter')));
@@ -430,11 +429,11 @@ const onFilterInput = (event) => {
     // if(filteredAlbums.length > 3) {filteredStr += ` and ${filteredAlbums.length - 3} others.`}
 
     // dont truncate albums
-    filteredStr = filteredAlbums.join(", ") + ".";
+    updateFilteredStr();
 
     // check if all boxes are selected
     if (!document.querySelector("input.checkbox-input:not(:checked)")) {
-        filteredStr = "All";
+        updateFilteredStr("All");
         document.querySelector('#choose-all-input').checked = true;
     } else {
         document.querySelector('#choose-all-input').checked = false;
@@ -455,7 +454,7 @@ const onChooseAll = (event) => {
         }
     }
     // update filteredStr
-    filteredStr = isChecked ? 'All' : 'none';
+    isChecked ? updateFilteredStr('All') : updateFilteredStr('none');
 
     document.getElementById('album-num').innerText = filteredAlbums.length;
     document.getElementById('filter-accept').disabled = (filteredAlbums.length === 0); 
@@ -491,15 +490,30 @@ const createFilterScreen = () => {
                document.getElementById('choice-container').appendChild(newEl);
         }
         document.getElementById('choose-all-input').checked = isAllChecked;
-        if (isAllChecked) {
-            filteredStr = "All"
-        } else {
-            filteredStr = filteredAlbums.join(", ") + ".";
-        }
+        isAllChecked ? updateFilteredStr("All") : updateFilteredStr();
 
         if (filteringAvailable) {
             document.getElementById("album-name").innerText = `The song is from one of the albums: ${filteredStr}`;
         }
+}
+
+/**
+ * 
+ * @param {string} value - the value of filteredStr. If not defined, 
+ * gets the albums names from filteredAlbums and orders them
+ */
+const updateFilteredStr = (value) => {
+    if (value) {
+        filteredStr = value;
+    } else {
+        const songsByOrder = [];
+        for (key of songMap.keys()) {
+            if (filteredAlbums.includes(key)) {
+                songsByOrder.push(key);
+            }
+        }
+        filteredStr = songsByOrder.join(', ') + '.';
+    }
 }
 
 
