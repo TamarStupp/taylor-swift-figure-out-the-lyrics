@@ -3,6 +3,7 @@ let uniqueLyrics = [];
 let minutesLeft = 10;
 let secondsLeft = 13;
 let timerInterval;
+let filteringAvailable = true;
 let isPaused = false;
 let offlineSongs = localStorage.getItem('offlineSongs') || 5;
 const restartIcon = `<svg viewBox="0 0 31 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="restart-icon">
@@ -14,7 +15,7 @@ const checkboxSvg = `<svg class="checkbox-svg" viewBox="0 0 41 41" fill="none" x
 <path class="v" d="M10 20.2269C13.5 22 14.7497 27.8264 14.7497 27.8264C14.7497 27.8264 20.5 16.5 30.5762 12" stroke="var(--checkbox-stroke)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
-let filteredAlbums = [];
+let filteredAlbums = JSON.parse(localStorage.getItem('filterList'));
 let filteredAlbumsCopy = [];
 let filteredStr = '';
 let isUsingFilter = false;
@@ -34,7 +35,7 @@ const songList = [
 ]
 
 const songMap = new Map(songList);
-const NUMBER_OF_SONGS = 231;
+const NUMBER_OF_SONGS = 232;
 const broadcast = new BroadcastChannel('offlineSongs');
 /**
  * @param {Array} chosenAlbums deafult: empty arry. The names of 
@@ -42,15 +43,6 @@ const broadcast = new BroadcastChannel('offlineSongs');
  */
 const getRandomSongLyrics = async () => {
     let response = await fetchSong();
-    // if retriving the song lyrics after five tries is impossible, show error message
-    if (!response.ok) {
-        console.error(`fetch failed. Response status: ${response.status}`);
-        if (navigator.onLine) {
-            customAlert(document.querySelector('#no-song'));
-        } else {
-            customAlert(document.querySelector('#no-internet'));
-        }
-    }
     const result = await response.text();
     lyrics = result.split(/[ (/\n)]/g);
     // TODO: make sure DOM is ready before trying to change it
@@ -74,8 +66,30 @@ const getRandomSongLyrics = async () => {
 }
 
 const fetchSong = async () => {
-    const randomSongNum = Math.round(Math.random() * NUMBER_OF_SONGS);
-    return await fetch(`./songs/allSongs/song${randomSongNum}.txt`);
+    let response;
+    if (filteredAlbums.length >= songMap.size) {
+        // no filtering needed
+        const randomSongNum = Math.floor(Math.random() * NUMBER_OF_SONGS);
+        response =  await fetch(`./songs/allSongs/song${randomSongNum}.txt?filter=false`);
+    } else {
+        let pool = [];
+        for (key of filteredAlbums) {
+            pool.push(...songMap.get(key));
+        }
+        const randomSongNum = Math.floor(Math.random() * pool.length);
+        response = await fetch(`./songs/allSongs/song${pool[randomSongNum]}.txt?filter=true`);
+    }
+
+    // check for errors
+    if (!response.ok) {
+        console.error(`fetch failed. Response status: ${response.status}`);
+        if (navigator.onLine) {
+            customAlert(document.querySelector('#no-song'));
+        } else {
+            customAlert(document.querySelector('#no-internet'));
+        }
+    }
+    return response;
 }
 
 const changeVisibility = (e) => {
@@ -220,9 +234,8 @@ const finishGame = () => {
 const customAlert = (wrapper, goBackTo) => {
     document.querySelector("body").style.overflow = 'hidden';
     // reset filter screen so changes will not be saved unless specifically told so.
-    if (wrapper.id = 'filter') {
+    if (wrapper.id === 'filter') {
         filteredAlbumsCopy = [...filteredAlbums];
-        console.log(filteredAlbums);
         let isAllChecked = true;
         for (el of document.querySelectorAll('.checkbox-input')) {
             if (!(filteredAlbums.includes(el.dataset.album))) {
@@ -270,8 +283,7 @@ const customAlert = (wrapper, goBackTo) => {
                     break;
                 } case ("settings-close-btn") : {
                     localStorage.setItem('offlineSongs', offlineSongs);
-                    broadcast.postMessage(offlineSongs);
-                    // Add call to broadcast channel?
+                    broadcast.postMessage({"offlineSongs": offlineSongs});
                     isBtnPressed = true;
                     resolve(true);
                     break;
@@ -284,7 +296,6 @@ const customAlert = (wrapper, goBackTo) => {
                     }
                     isBtnPressed = true;
                     filteredAlbums = [...filteredAlbumsCopy];
-                    console.log(filteredAlbums);
                     break;
                 } case ("plus-btn"): {
                     if (offlineSongs < 30) {
@@ -306,7 +317,7 @@ const customAlert = (wrapper, goBackTo) => {
                     break;
                 } case ("filter-accept"): {
                     if (filteredAlbums.length > 0) {
-                        document.getElementById("album-name").innerText = filteredStr;
+                         document.getElementById("album-name").innerText = `The song is from one of the albums: ${filteredStr}`;
                         localStorage.setItem('filterList', JSON.stringify(filteredAlbums));
                         isBtnPressed = true;
                         restart();
@@ -315,7 +326,6 @@ const customAlert = (wrapper, goBackTo) => {
                     break;
                 }
             }
-            
 
             if (isBtnPressed) {
                 event.currentTarget.removeEventListener("click", onClickWrapper);
@@ -336,6 +346,7 @@ const customAlert = (wrapper, goBackTo) => {
 
 /*-------------- restart ------------------ */
 const restart = () => {
+    filteringAvailable = true;
     lyrics = [];
     uniqueLyrics = [];
     minutesLeft = 10;
@@ -360,7 +371,17 @@ const restart = () => {
 navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
     broadcast.onmessage = (event) => {
         console.log('window received message');
-        broadcast.postMessage(offlineSongs);
+        if (event.data === 'get info') {
+            broadcast.postMessage({"offlineSongs": offlineSongs, "numberOfSongs": NUMBER_OF_SONGS});
+        }
+        if (event.data === 'filtering failed') {
+            if (navigator.onLine) {
+                document.getElementById("album-name").innerText = 'There was a problem with filtering albums. Please try again later.';
+            } else {
+                document.getElementById("album-name").innerText = 'Filtering is unavailabe offline';
+            }
+            filteringAvailable = false;
+        }
     }
 
 });
@@ -372,15 +393,14 @@ window.addEventListener("load", () => {
     //add event listeners
     document.getElementById('pause-btn').addEventListener('click', () => customAlert(document.querySelector("#pause-text")));
     document.getElementById('settings-btn').addEventListener('click', () => customAlert(document.querySelector("#settings")));
-    document.getElementById('change-albums').addEventListener("click", () => customAlert(document.querySelector('#filter')))
     // upade saved offline songs preference
     document.getElementById("num-of-offline-songs").innerText = offlineSongs;
-    filteredAlbums = JSON.parse(localStorage.getItem('filterList'));
     if (!filteredAlbums) {
         filteredAlbums = [...songMap.keys()];
     }
     
     createFilterScreen();
+    document.getElementById('change-albums')?.addEventListener("click", () =>customAlert(document.querySelector('#filter')));
 
 
 
@@ -399,7 +419,10 @@ const onFilterInput = (event) => {
     if (event.currentTarget.checked) {
         filteredAlbums.push(event.currentTarget.dataset.album);
     } else {
-        filteredAlbums.splice(filteredAlbums.indexOf(event.currentTarget.dataset.album), 1);   
+        // Delete every time the album appears
+        while (filteredAlbums.indexOf(event.currentTarget.dataset.album) !== -1) {
+            filteredAlbums.splice(filteredAlbums.indexOf(event.currentTarget.dataset.album), 1);   
+        }
     }
 
     // truncate more than 3 albums
@@ -422,6 +445,7 @@ const onFilterInput = (event) => {
 }
 
 const onChooseAll = (event) => {
+    filteredAlbums = [];
     const isChecked = event.currentTarget.checked;
     // update all elements to match
     for (element of document.querySelectorAll('.checkbox-input')) {
@@ -431,12 +455,8 @@ const onChooseAll = (event) => {
         }
     }
     // update filteredStr
-    if (isChecked) {
-        filteredStr = 'All';
-    } else {
-        filteredAlbums = [];
-        filteredStr = 'none';
-    }
+    filteredStr = isChecked ? 'All' : 'none';
+
     document.getElementById('album-num').innerText = filteredAlbums.length;
     document.getElementById('filter-accept').disabled = (filteredAlbums.length === 0); 
 }
@@ -476,7 +496,10 @@ const createFilterScreen = () => {
         } else {
             filteredStr = filteredAlbums.join(", ") + ".";
         }
-        document.getElementById("album-name").innerText = filteredStr;
+
+        if (filteringAvailable) {
+            document.getElementById("album-name").innerText = `The song is from one of the albums: ${filteredStr}`;
+        }
 }
 
 
