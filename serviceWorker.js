@@ -1,7 +1,7 @@
 let OFFLINE_SONGS = 5;
 // songs without TTPD: 199
 let NUMBER_OF_SONGS = 232;
-const VERSION = 2;
+const VERSION = 2.1;
 const SONG_CACHE_NAME = `songs-${VERSION}`;
 const GENERAL_CACHE_NAME = `general-${VERSION}`;
 const broadcast = new BroadcastChannel('offlineSongs');
@@ -72,14 +72,18 @@ self.addEventListener("install", (event) => {
 })
 
 self.addEventListener("fetch", (event) => {
+	// disable caching if it's from localhost becasue I do tests on localhost
 	if (!event.request.url.includes('allSongs')) {
-		// Temporary disable caching
-		event.respondWith(
-			caches.open(GENERAL_CACHE_NAME).then(cache => {
-				return cache.match(event.request.url).then(response => {
-					return response || fetch(event.request.url);
-				})
-			}))
+		if (!self.location.href.includes("127.0.0.1") && !self.location.href.includes("localhost")) {
+			event.respondWith(
+				caches.open(GENERAL_CACHE_NAME).then(cache => {
+					return cache.match(event.request.url).then(response => {
+						return response || fetch(event.request.url);
+					})
+				}))
+		} else {
+			console.log('not caching js, css and html');
+		}
 	} else {
 		if (new URL(event.request.url).searchParams.get("filter") === "false") {
 			event.respondWith(getSongFromCache(event));

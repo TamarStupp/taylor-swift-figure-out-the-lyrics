@@ -76,7 +76,6 @@ const fetchSong = async () => {
     } else {
         let pool = [];
         for (key of filteredAlbums) {
-            console.log(key);
             if (songMap.get(key)) {
                 pool.push(...songMap.get(key));
             } else {
@@ -248,6 +247,8 @@ const finishGame = () => {
 
 const customAlert = (wrapper, goBackTo) => {
     document.querySelector("body").style.overflow = 'hidden';
+    document.getElementById("guess").disabled = true;
+    document.getElementById("guess").value = '';
     // reset filter screen so changes will not be saved unless specifically told so.
     if (wrapper.id === 'filter') {
         filteredAlbumsCopy = [...filteredAlbums];
@@ -349,6 +350,7 @@ const customAlert = (wrapper, goBackTo) => {
     });
     promise.then((isStartTimer) => {
         wrapper.classList.add('none');
+        document.getElementById("guess").disabled = false;
         if (isStartTimer) {timerInterval = setInterval(updateTimer, 1000);}
         document.addEventListener("visibilitychange", changeVisibility);
         isPaused = false;
