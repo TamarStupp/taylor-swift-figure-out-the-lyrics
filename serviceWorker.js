@@ -66,7 +66,10 @@ self.addEventListener("install", (event) => {
 	)
 	event.waitUntil(
 		caches.open(GENERAL_CACHE_NAME).then(cache => {
-			cache.addAll(files);
+			for (file of files) {
+				cache.add(file);
+			}
+			// cache.addAll(files);
 		})
 	)
 })
