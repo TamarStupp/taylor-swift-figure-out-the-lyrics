@@ -721,6 +721,7 @@ svg .settings-icon {
 }
 
 
+
 /* mobile styles */
 @media screen and (max-width: 760px) {
     html {
@@ -972,6 +973,21 @@ svg .settings-icon {
         margin-top: 0.5rem;
         font-size: 0.8rem;
         font-weight: 100;
+    }
+
+    
+    .keep-game-screen {
+        padding-top: 1.3em;
+        padding-inline: 0.3em;
+        padding-bottom: 0.5em;
+    }
+    .keep-game-screen .text {
+        font-size: 1.5rem;
+    }
+
+    .keepGameButtons .popup-btn {
+        flex-shrink: 0;
+        font-size: 0.8rem;
     }
 }
 

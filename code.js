@@ -310,7 +310,6 @@ const customAlert = (wrapper, goBackTo) => {
                     isBtnPressed = true;
                     break;
                 } case ("instructions-btn"): {
-                    debugger
                     event.currentTarget.classList.add('none');
                     customAlert(document.querySelector("#instructions-text"), event.currentTarget);
                     isBtnPressed = true;
