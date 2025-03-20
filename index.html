@@ -52,7 +52,7 @@
             <!-- switch -->
             <label class="dark-mode-switch">
                 <input type="checkbox" id="dark-mode-input" checked>
-                <span class="slider round">
+                <span class="switch round">
                     <div class="handle"></div>
                 </span>
             </label>
@@ -129,6 +129,16 @@
             <div class="close-btn exit"></div>
             <button class="start-over popup-btn" id="start-over">Start Over</button>
             <button class="close-btn continue popup-btn">Continue</button>
+        </div>
+    </div>
+    <div class="black-screen none" id="keep-last-game">
+        <div class="alert-wrapper pause-screen">
+            <div class="text">Do you want to resume your last game?</div>
+            <div class="close-btn exit"></div>
+            <div class="keepGameButtons">
+                <button class="popup-btn continue" id="keep-game">Yes</button>
+                <button class="popup-btn close-btn">No</button>
+            </div>
         </div>
     </div>
     <div class="black-screen none" id="settings">

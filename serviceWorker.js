@@ -1,7 +1,7 @@
 let OFFLINE_SONGS = 5;
 // songs without TTPD: 199
 let NUMBER_OF_SONGS = 232;
-const VERSION = 2.2;
+const VERSION = 2.3;
 const SONG_CACHE_NAME = `songs-${VERSION}`;
 const GENERAL_CACHE_NAME = `general-${VERSION}`;
 const broadcast = new BroadcastChannel('offlineSongs');

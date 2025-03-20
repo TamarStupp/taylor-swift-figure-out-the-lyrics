@@ -169,8 +169,8 @@ footer {
     height: 0;
 }
 
-/* the slider body */
-.slider {
+/* the switch body */
+.switch {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -190,7 +190,7 @@ footer {
 }
 
 /* the handle */
-.slider .handle {
+.switch .handle {
     width: calc(0.8 * var(--switch-height));
     /* 80% percent of switch height */
     height: calc(0.8 * var(--switch-height));
@@ -205,13 +205,13 @@ footer {
 }
 
 /* light mode */
-input:checked+.slider {
+input:checked+.switch {
     background-color: white;
     border: 1px var(--bold-text) solid;
 }
 
 
-input:checked+.slider .handle {
+input:checked+.switch .handle {
     border: 1px var(--bold-text) solid;
     background-color: #ffc0cb83;
     /* margin-left: calc(100% - 5% - 0.6rem); */
@@ -349,7 +349,6 @@ input:checked+.slider .handle {
 
 .statistic {
     width: 100%;
-    box-sizing: border-box;
     display: flex;
     margin-bottom: 0.5rem;
     gap: 1em;
@@ -704,6 +703,23 @@ svg .settings-icon {
 .endGame.guess::placeholder {
     color: var(--gameover-color);
 }
+
+.keepGameButtons {
+    width: 100%;
+    display: flex;
+    margin-bottom: 0.5rem;
+    gap: 1em;
+    box-sizing: border-box;
+    padding: 0.1rem 0.4rem;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.keepGameButtons .popup-btn {
+    flex-shrink: 0;
+}
+
 
 /* mobile styles */
 @media screen and (max-width: 760px) {
