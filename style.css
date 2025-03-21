@@ -704,6 +704,11 @@ svg .settings-icon {
     color: var(--gameover-color);
 }
 
+.keep-game-screen {
+    padding-inline: 1.5rem;
+    min-width: 23rem;
+}
+
 .keepGameButtons {
     width: 100%;
     display: flex;
@@ -717,7 +722,7 @@ svg .settings-icon {
 }
 
 .keepGameButtons .popup-btn {
-    flex-shrink: 0;
+    flex-basis: 6rem;
 }
 
 
