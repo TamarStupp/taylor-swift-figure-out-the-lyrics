@@ -6,6 +6,7 @@ let timerInterval;
 let isPaused = false;
 let isGameOver = false;
 let offlineSongs = localStorage.getItem('offlineSongs') || 5;
+let wordsFound = 0;
 const restartIcon = `<svg viewBox="0 0 31 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="restart-icon">
 <path d="M10.6962 22.6168C10.0167 22.1429 9.08169 22.3096 8.60777 22.989C8.13385 23.6685 8.3005 24.6035 8.97998 25.0775L10.6962 22.6168ZM4.49195 13.2169L3.12185 13.8275C3.29985 14.2269 3.64328 14.5287 4.06222 14.654C4.48117 14.7793 4.93393 14.7155 5.30196 14.4794L4.49195 13.2169ZM9.25288 11.9445C9.95013 11.4971 10.1527 10.5692 9.70536 9.87197C9.258 9.17472 8.33011 8.97213 7.63285 9.41949L9.25288 11.9445ZM3.62352 7.58326C3.2863 6.82657 2.39952 6.48653 1.64283 6.82375C0.886143 7.16097 0.546099 8.04776 0.883319 8.80444L3.62352 7.58326ZM7.82475 7.81245C11.1207 3.0868 17.7752 1.95092 22.7096 5.3925L24.4258 2.93188C18.1947 -1.41411 9.6508 -0.0498022 5.36413 6.09625L7.82475 7.81245ZM22.7096 5.3925C27.644 8.83407 28.877 15.4712 25.581 20.1969L28.0417 21.9131C32.3283 15.767 30.6569 7.27786 24.4258 2.93188L22.7096 5.3925ZM25.581 20.1969C22.285 24.9225 15.6306 26.0584 10.6962 22.6168L8.97998 25.0775C15.2111 29.4234 23.755 28.0591 28.0417 21.9131L25.581 20.1969ZM5.99078 13.2762C6.06623 11.3694 6.66341 9.47753 7.82475 7.81245L5.36413 6.09625C3.86274 8.24888 3.0904 10.6993 2.99313 13.1576L5.99078 13.2762ZM7.63285 9.41949L3.68194 11.9544L5.30196 14.4794L9.25288 11.9445L7.63285 9.41949ZM0.883319 8.80444L3.12185 13.8275L5.86206 12.6063L3.62352 7.58326L0.883319 8.80444Z" fill="var(--bold-text)"/>
 </svg>
@@ -139,11 +140,18 @@ const registerEntrance = async () => {
     }
 }
 
-/*-------------- Create the word elements ------------------ */
+/*-------------- Create the word elements and remove empty ------------------ */
 const createWordElements = () => {
     let wordDiv;
-    for (let index in lyrics) {
+    for (let index = 0; index < lyrics.length; index++) {
         let sterileWord = sterilize(lyrics[index]);
+        while (sterileWord === '' || lyrics[index].includes('[') || lyrics[index].includes(']')) {
+            lyrics.splice(index, 1);
+            if (index >= lyrics.length) {
+                return;
+            }
+            sterileWord = sterilize(lyrics[index]);
+        }
         wordDiv = document.createElement('div');
         wordDiv.setAttribute('data-word', sterileWord);
         wordDiv.classList.add('word');
@@ -156,15 +164,6 @@ const createUniqueLyrics = () => {
     let sterileWord;
     for (let index in lyrics) {
         sterileWord = sterilize(lyrics[index]);
-        // make sure the word is not empty or not a singer name
-        while (sterileWord === '' || lyrics[index].includes('[') || lyrics[index].includes(']')) {
-            lyrics.splice(Number(index), 1);
-            if (index >= lyrics.length) {
-                return;
-            }
-            sterileWord = sterilize(lyrics[index]);
-        }
-
         // Adds sterile words to uniqueLyrics
         if (!uniqueLyrics.includes(sterileWord)) {
             uniqueLyrics.push(sterileWord);
@@ -197,6 +196,7 @@ const onInput = (event) => {
         if (sterilize(inputValue) === word) {
             document.querySelectorAll(`[data-word="${word}"]`).forEach((el) => {
                 el.classList.add("black");
+                wordsFound++;
             });
             document.getElementById('word-amount').innerText = `${document.getElementsByClassName('black').length}/${lyrics.length}`;
             uniqueLyrics.splice(uniqueLyrics.indexOf(word), 1);
@@ -206,7 +206,7 @@ const onInput = (event) => {
     }
 
     // Check for win
-    if (document.querySelectorAll('.black').length >= lyrics.length) {
+    if (wordsFound >= lyrics.length) {
         customAlert(document.querySelector("#win"));
         finishGame();
     }
@@ -387,6 +387,7 @@ const restart = () => {
     uniqueLyrics = [];
     minutesLeft = 10;
     secondsLeft = 13;
+    wordsFound = 0;
     clearInterval(timerInterval);
     timerInterval = '';
     isPaused = false;
@@ -435,6 +436,7 @@ const keepGameClick = (event) => {
         secondsLeft = Number(localStorage.getItem("secondsLeft"));
         lyrics = JSON.parse(localStorage.getItem("lyrics"));
         const newUniqueLyrics = JSON.parse(localStorage.getItem("uniqueLyrics"));
+        wordsFound = Number(localStorage.getItem("wordsFound"));
         createUniqueLyrics();
         startGame(true);
         for (word of uniqueLyrics) {
@@ -454,13 +456,14 @@ const keepGameClick = (event) => {
 
 const saveProgressInLocalStorage = () => {
     // check there is something to save
-    if (document.querySelector('.black')) {
+    if (wordsFound >= 1) {
         console.log('saved');
         localStorage.setItem("isGameOver", String(isGameOver));
         localStorage.setItem("minutesLeft", String(minutesLeft));
         localStorage.setItem("secondsLeft", String(secondsLeft));
         localStorage.setItem("lyrics", JSON.stringify(lyrics));
         localStorage.setItem("uniqueLyrics", JSON.stringify(uniqueLyrics));
+        localStorage.setItem("wordsFound", String(wordsFound));
     } else {
         localStorage.setItem("isGameOver", String(true));
     }
