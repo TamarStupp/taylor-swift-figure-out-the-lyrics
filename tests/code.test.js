@@ -1,5 +1,5 @@
 import { Selector, RequestMock } from 'testcafe';
-import mainPageModel from './MainPageModel.test'
+import mainPageModel from './MainPageModel.test.js'
 
 const songLyrics = `3 AM and I'm still awake, I'll bet you're just fine
 Fast asleep in your city that's better than mine
@@ -62,14 +62,31 @@ I bet you think about me when you say
 "Oh my god, she's insane, she wrote a song about me"
 I bet you think about me
 `
-fixture('main')
+
+const mockRequestHook = RequestMock()
+// needs full url - including http
+.onRequestTo(/http:\/\/localhost:5500\/songs\/allSongs\/song[0-9]+\.txt/)
+.respond((req, res) => {
+    res.headers['Content-Type'] = 'text/plain;charset=UTF-8'
+    res.setBody(songLyrics)
+})
+
+const blockLogReqs = RequestMock()
+.onRequestTo(async request => {
+    const urlNoParams =  request.url.split('?')[0];
+    return (urlNoParams === 'https://docs.google.com/forms/d/e/1FAIpQLSdlQMloARGShFuOMs-9UZDS2fqPa4JVVdsINhfdLGeZVIixYg/formResponse');
+})
+.respond('', 200)
+
+
+fixture('file:// protocol')
+.requestHooks(blockLogReqs)
 .page('../index.html');
 
 test('timer after pause', async t => {
-    const timerText = mainPageModel.timer.innerText
-    console.log(timerText);
-    const minutes = timerText.slice(0,2);
-    const seconds = timerText.slice(3,);
+    const timerText = await mainPageModel.timer.innerText
+    const minutes = Number(timerText.slice(0,2));
+    const seconds = Number(timerText.slice(3,));
     const waitTime = 5
     let expectedSeconds = seconds - (1+1+waitTime);
     let expectedMinutes = minutes;
@@ -96,24 +113,74 @@ test('timer after pause', async t => {
 })
 
 
+fixture('Live server tests')
+.requestHooks(blockLogReqs)
+.page("http://localhost:5500/index.html")
 
-// I bet you think about me fixture
-const mockRequest = RequestMock()
-.onRequestTo(/http:\/\/localhost:5500\/songs\/allSongs\/song[0-9]+\.txt/)
-.respond((req, res) => {
-    res.headers['Content-Type'] = 'text/plain;charset=UTF-8'
-    res.setBody(songLyrics)
+test('stop timer after giveup', async t => {
+    const timerText = await mainPageModel.timer.innerText;
+    if (await Selector('keep-last-game').count >= 1) {
+        await t.click(Selector('keep-last-game').find('.continue'))
+    }
+    await t.click(mainPageModel.giveup)
+    .wait(5*1000)
+    .expect(mainPageModel.timer.innerText).eql(timerText)
+    .expect(mainPageModel.input.hasAttribute('readonly')).ok()
+})
+
+test('check timer after multiply restarts', async t => {
+    await t
+    .click(mainPageModel.giveup) //giveup
+    .wait(0.1*1000)
+    .click(mainPageModel.giveup) //restart
+    .wait(0.1*1000)
+    .click(mainPageModel.giveup) //giveup
+    .wait(0.1*1000)
+    .click(mainPageModel.giveup) //restart
+
+    const timerText = await mainPageModel.timer.innerText
+    const minutes = Number(timerText.slice(0,2));
+    const seconds = Number(timerText.slice(3,));
+    const waitTime = 5
+    let expectedSeconds = seconds - (1+1+waitTime);
+    let expectedMinutes = minutes;
+    if (expectedSeconds < 0) {
+        expectedSeconds  = 60 + expectedSeconds;
+        expectedMinutes--;
+    }
+
+    expectedMinutes = String(expectedMinutes).padStart(2, '0');
+    expectedSeconds = String(expectedSeconds).padStart(2, '0');
+
+    await t.wait(waitTime * 1000)
+    .expect(mainPageModel.timer.innerText).eql(`${expectedMinutes}:${expectedSeconds}`)
 })
 
 
-fixture('I bet you think about me fixture').requestHooks(mockRequest).page("http://localhost:5500/index.html")
+
+// // I bet you think about me fixture
+fixture('I bet you think about me fixture')
+.requestHooks(mockRequestHook, blockLogReqs)
+.page("http://localhost:5500/index.html")
 
 test('word len', async t => {
-    await t.debug()
-    .expect(Selector('.word').count).eql(421);
-
-    
+    await t.expect(Selector('.word').count).eql(421);
 })
 
+test('check time stop after win', async t => {
+    const wordsArr = songLyrics.split(/[ (/\n)]/g);
+    for (let i = 0; i < wordsArr.length; i++) {
+        if (wordsArr[i].length > 0) {
+            await t.typeText(mainPageModel.input, wordsArr[i],  { replace: true, paste: true, speed: 1});
+            await t.wait(1);
+        }
+    }
 
+    const timerText = await mainPageModel.timer.innerText;
 
+    await t
+    .click(mainPageModel.winExit)
+    .wait(5 * 1000)
+    // timer should stop after winning
+    .expect(mainPageModel.timer.innerText).eql(timerText);
+})
