@@ -65,7 +65,7 @@ I bet you think about me
 
 const mockRequestHook = RequestMock()
 // needs full url - including http
-.onRequestTo(/http:\/\/localhost:5500\/songs\/allSongs\/song[0-9]+\.txt/)
+.onRequestTo(/https:\/\/tamarstupp\.github\.io\/taylor-swift-figure-out-the-lyrics\/songs\/allSongs\/song[0-9]+\.txt/)
 .respond((req, res) => {
     res.headers['Content-Type'] = 'text/plain;charset=UTF-8'
     res.setBody(songLyrics)
