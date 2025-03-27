@@ -16,4 +16,4 @@ jobs:
       - name: install testcafe
         run: npm i -g testcafe
       - name: run tests
-        run: testcafe chrome ".\tests\remote.test.js
+        run: testcafe chrome ".\tests\remote.test.js"
