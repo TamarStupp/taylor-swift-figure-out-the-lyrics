@@ -205,8 +205,8 @@ const onInput = (event) => {
         }
     }
 
-    // Check for win
-    if (wordsFound >= lyrics.length) {
+    // Check for win - it was "wordsFound >= lyrics.length" but there's a problem with wordsFound
+    if (document.querySelector(".word:not(.black)")) {
         customAlert(document.querySelector("#win"));
         finishGame();
     }
@@ -516,6 +516,7 @@ window.addEventListener("load", () => {
     })
 })
 
+// -------- handle filter -----------------
 const onFilterInput = (event) => {
     if (event.currentTarget.checked) {
         filteredAlbums.push(event.currentTarget.dataset.album);
