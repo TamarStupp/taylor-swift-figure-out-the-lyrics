@@ -41,7 +41,7 @@ let filteredStr = '';
 
 const broadcast = new BroadcastChannel('offlineSongs');
 
-const startGame = async () => {
+const startGame = () => {
     createWordElements();
     createUniqueLyrics();
     // activate input and start game
@@ -192,13 +192,7 @@ const onInput = (event) => {
     // uniqueLyrics is sterile
     for (let word of uniqueLyrics) {
         if (sterilize(inputValue) === word) {
-            document.querySelectorAll(`[data-word="${word}"]`).forEach((el) => {
-                el.classList.add("black");
-                wordsFound++;
-            });
-            document.getElementById('word-amount').innerText = `${document.getElementsByClassName('black').length}/${lyrics.length}`;
-            uniqueLyrics.splice(uniqueLyrics.indexOf(word), 1);
-            document.getElementById('guess').value = '';
+            enterWord(word);
             break;
         }
     }
@@ -208,6 +202,16 @@ const onInput = (event) => {
         customAlert(document.querySelector("#win"));
         finishGame();
     }
+}
+
+const enterWord = (word) => {
+        document.querySelectorAll(`[data-word="${word}"]`).forEach((el) => {
+        el.classList.add("black");
+        wordsFound++;
+    });
+    document.getElementById('word-amount').innerText = `${document.getElementsByClassName('black').length}/${lyrics.length}`;
+    uniqueLyrics.splice(uniqueLyrics.indexOf(word), 1);
+    document.getElementById('guess').value = '';
 }
 
 /*-------------- update timer ------------------ */
@@ -435,15 +439,12 @@ const keepGameClick = (event) => {
         lyrics = JSON.parse(localStorage.getItem("lyrics"));
         const newUniqueLyrics = JSON.parse(localStorage.getItem("uniqueLyrics"));
         wordsFound = Number(localStorage.getItem("wordsFound"));
-        createUniqueLyrics();
-        startGame(true);
-        for (word of uniqueLyrics) {
+        startGame();
+        uniqueLyricsCopy = [...uniqueLyrics]
+        for (word of uniqueLyricsCopy) {
+            console.log(word);
             if (!(newUniqueLyrics.includes(word))) {
-                document.querySelectorAll(`[data-word="${word}"]`).forEach((el) => {
-                    el.classList.add("black");
-                });
-                document.getElementById('word-amount').innerText = `${document.getElementsByClassName('black').length}/${lyrics.length}`;
-                uniqueLyrics.splice(uniqueLyrics.indexOf(word), 1);
+                enterWord(word);
             }
         }
         document.getElementById("keep-last-game").removeEventListener('click', keepGameClick);
