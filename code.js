@@ -41,11 +41,9 @@ let filteredStr = '';
 
 const broadcast = new BroadcastChannel('offlineSongs');
 
-const startGame = async (isNewGame) => {
+const startGame = async () => {
     createWordElements();
-    if (isNewGame) {
-        createUniqueLyrics();
-    }
+    createUniqueLyrics();
     // activate input and start game
     document.getElementById('guess').setAttribute('placeholder', 'Guess the lyrics');
     document.getElementById('guess').readOnly = false;
@@ -402,7 +400,7 @@ const restart = () => {
     document.getElementById('pause-btn').style.pointerEvents = 'all'; 
     document.querySelector('.score').addEventListener('click', toggleHidden);
     fetchSong().then (() => {
-        startGame(true);
+        startGame();
     })
 }
 
@@ -427,7 +425,7 @@ navigator.serviceWorker.register('./serviceWorker.js').then((registration) => {
 
 const keepGameClick = (event) => {
     if (event.target.classList.contains('close-btn')) {
-        startGame(true);
+        startGame();
         document.getElementById("keep-last-game").removeEventListener('click', keepGameClick);
         document.getElementById("keep-last-game").style.display = 'none';
     } else if (event.target.id === 'keep-game') {
@@ -485,10 +483,10 @@ window.addEventListener("load", () => {
         // check if fetchSong is complete
         if (lyrics.length < 1) {
             songFetchPromise.then(() => {
-                startGame(true);
+                startGame();
             })
         } else {
-            startGame(true);
+            startGame();
         }
     }
     
