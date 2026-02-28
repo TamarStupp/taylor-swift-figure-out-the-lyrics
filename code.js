@@ -439,12 +439,11 @@ const keepGameClick = (event) => {
         secondsLeft = Number(localStorage.getItem("secondsLeft"));
         lyrics = JSON.parse(localStorage.getItem("lyrics"));
         const newUniqueLyrics = JSON.parse(localStorage.getItem("uniqueLyrics"));
-        wordsFound = Number(localStorage.getItem("wordsFound"));
         startGame();
         uniqueLyricsCopy = [...uniqueLyrics]
         for (word of uniqueLyricsCopy) {
-            console.log(word);
             if (!(newUniqueLyrics.includes(word))) {
+                // debugger
                 enterWord(word);
             }
         }
